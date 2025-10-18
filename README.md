@@ -8,50 +8,46 @@
     body {
       margin: 0;
       padding: 0;
-      background: radial-gradient(circle at center, #000000 60%, #111111 100%);
+      background-color: #000;
       color: #fff;
-      font-family: 'Trebuchet MS', sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
-      overflow-x: hidden;
     }
 
-    /* — Заголовок — */
+    /* вращающийся заголовок */
     h1 {
       font-size: 70px;
       margin: 50px 0 20px;
       display: inline-block;
-      animation: spin 6s linear infinite;
-      text-shadow: 0 0 20px #ff0000;
+      animation: spin 5s linear infinite;
+      transform-style: preserve-3d;
     }
 
     @keyframes spin {
-      0% { transform: rotateY(0deg); color: #ff0000; }
-      50% { transform: rotateY(180deg); color: #ffcc00; }
-      100% { transform: rotateY(360deg); color: #ff0000; }
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
     }
 
     .balance {
       font-size: 26px;
       margin-bottom: 30px;
-      text-shadow: 0 0 8px #00ff00;
     }
 
-    /* — Магазин — */
     .shop {
       display: flex;
       justify-content: center;
       align-items: center;
       flex-wrap: wrap;
       gap: 40px;
-      padding-bottom: 80px;
+      padding-bottom: 60px;
     }
 
     .item {
       background: #1a1a1a;
       border-radius: 20px;
       padding: 20px;
-      width: 260px;
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+      width: 250px;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
@@ -64,9 +60,8 @@
       width: 200px;
       height: 200px;
       object-fit: contain;
-      margin-bottom: 10px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      margin-bottom: 10px;
     }
 
     p {
@@ -75,30 +70,27 @@
     }
 
     button {
-      background: linear-gradient(90deg, #ff0000, #ff6600);
+      background: #ff0000;
       border: none;
       color: white;
       padding: 10px 25px;
       border-radius: 10px;
       font-size: 18px;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.3s;
-      box-shadow: 0 0 10px #ff3300;
+      transition: background 0.3s, transform 0.2s;
     }
 
     button:hover {
+      background: #cc0000;
       transform: scale(1.1);
-      box-shadow: 0 0 20px #ff6600;
     }
 
     .bought {
       background: #333 !important;
-      color: #aaa !important;
+      color: #888 !important;
       cursor: not-allowed !important;
-      box-shadow: none !important;
     }
 
-    /* Эффект покупки */
     .flash {
       position: fixed;
       top: 0;
@@ -106,8 +98,8 @@
       width: 100%;
       height: 100%;
       background: rgba(255, 0, 0, 0.2);
-      z-index: 1000;
       animation: fadeOut 0.3s forwards;
+      z-index: 1000;
     }
 
     @keyframes fadeOut {
@@ -122,19 +114,20 @@
 
   <div class="shop">
     <div class="item">
-      <img src="https://i.imgur.com/X39lYsw.png" alt="Череп" />
+      <img src="https://i.imgur.com/lZyJPSV.png" alt="Череп" />
       <p>Цена: 1000💰</p>
       <button id="buy1">Купить</button>
     </div>
 
     <div class="item">
-      <img src="https://i.imgur.com/Ncb3y0L.png" alt="Зелье" />
+      <img src="https://i.imgur.com/3qAZGu7.png" alt="Зелье" />
       <p>Цена: 1000💰</p>
       <button id="buy2">Купить</button>
     </div>
   </div>
 
   <script>
+    // Загружаем данные
     let balance = parseInt(localStorage.getItem('balance')) || 1000;
     let bought1 = localStorage.getItem('bought1') === 'true';
     let bought2 = localStorage.getItem('bought2') === 'true';
