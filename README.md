@@ -6,66 +6,67 @@
   <title>Casino 💀</title>
   <style>
     body {
-      background-color: #0a0a0a;
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at center, #000000 60%, #111111 100%);
       color: #fff;
       font-family: 'Trebuchet MS', sans-serif;
       text-align: center;
-      margin: 0;
-      padding: 0;
       overflow-x: hidden;
     }
 
+    /* — Заголовок — */
     h1 {
       font-size: 70px;
       margin: 50px 0 20px;
-      text-shadow: 0 0 25px #ff0000, 0 0 50px #ff0000;
-      animation: blink 1.5s infinite;
+      display: inline-block;
+      animation: spin 6s linear infinite;
+      text-shadow: 0 0 20px #ff0000;
     }
 
-    @keyframes blink {
-      0%, 100% { color: #ff0000; text-shadow: 0 0 25px #ff0000, 0 0 50px #ff0000; }
-      50% { color: #ff6f00; text-shadow: 0 0 25px #ff6f00, 0 0 50px #ff6f00; }
+    @keyframes spin {
+      0% { transform: rotateY(0deg); color: #ff0000; }
+      50% { transform: rotateY(180deg); color: #ffcc00; }
+      100% { transform: rotateY(360deg); color: #ff0000; }
     }
 
     .balance {
       font-size: 26px;
       margin-bottom: 30px;
-      text-shadow: 0 0 10px #00ff00;
+      text-shadow: 0 0 8px #00ff00;
     }
 
+    /* — Магазин — */
     .shop {
       display: flex;
       justify-content: center;
       align-items: center;
       flex-wrap: wrap;
       gap: 40px;
-      padding-bottom: 60px;
+      padding-bottom: 80px;
     }
 
     .item {
-      background: #1b1b1b;
+      background: #1a1a1a;
       border-radius: 20px;
       padding: 20px;
       width: 260px;
-      box-shadow: 0 0 25px rgba(255, 0, 0, 0.3);
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .item:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
     }
 
     .item img {
-      width: 220px;
-      height: 220px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-      transition: transform 0.3s;
-    }
-
-    .item img:hover {
-      transform: rotate(3deg) scale(1.05);
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
     p {
@@ -74,37 +75,44 @@
     }
 
     button {
-      background: #ff0000;
+      background: linear-gradient(90deg, #ff0000, #ff6600);
       border: none;
       color: white;
       padding: 10px 25px;
       border-radius: 10px;
       font-size: 18px;
       cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 0 10px #ff3300;
     }
 
     button:hover {
-      background: #ff6f00;
       transform: scale(1.1);
+      box-shadow: 0 0 20px #ff6600;
     }
 
     .bought {
       background: #333 !important;
-      color: #888 !important;
+      color: #aaa !important;
       cursor: not-allowed !important;
       box-shadow: none !important;
-      transform: none !important;
     }
 
-    .buy-effect {
-      animation: pop 0.3s ease;
+    /* Эффект покупки */
+    .flash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 0, 0, 0.2);
+      z-index: 1000;
+      animation: fadeOut 0.3s forwards;
     }
 
-    @keyframes pop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.3); }
-      100% { transform: scale(1); }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
     }
   </style>
 </head>
@@ -114,13 +122,13 @@
 
   <div class="shop">
     <div class="item">
-      <img src="https://files.catbox.moe/m7yxlf.png" alt="Череп">
+      <img src="https://i.imgur.com/X39lYsw.png" alt="Череп" />
       <p>Цена: 1000💰</p>
       <button id="buy1">Купить</button>
     </div>
 
     <div class="item">
-      <img src="https://files.catbox.moe/hum5d3.png" alt="Зелье">
+      <img src="https://i.imgur.com/Ncb3y0L.png" alt="Зелье" />
       <p>Цена: 1000💰</p>
       <button id="buy2">Купить</button>
     </div>
@@ -153,26 +161,24 @@
       localStorage.setItem('bought2', bought2);
     }
 
-    function handleBuy(button, itemVar) {
-      if (balance >= 1000 && !itemVar.value) {
+    function buyItem(button, itemKey) {
+      if (balance >= 1000 && !window[itemKey]) {
         balance -= 1000;
-        itemVar.value = true;
-        button.classList.add('buy-effect');
-        setTimeout(() => button.classList.remove('buy-effect'), 300);
+        window[itemKey] = true;
         saveState();
         updateDisplay();
+
+        const flash = document.createElement('div');
+        flash.className = 'flash';
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 300);
       } else {
         alert('Недостаточно денег!');
       }
     }
 
-    buy1Btn.addEventListener('click', () => {
-      handleBuy(buy1Btn, { get value() { return bought1 }, set value(v) { bought1 = v } });
-    });
-
-    buy2Btn.addEventListener('click', () => {
-      handleBuy(buy2Btn, { get value() { return bought2 }, set value(v) { bought2 = v } });
-    });
+    buy1Btn.addEventListener('click', () => buyItem(buy1Btn, 'bought1'));
+    buy2Btn.addEventListener('click', () => buyItem(buy2Btn, 'bought2'));
 
     updateDisplay();
   </script>
