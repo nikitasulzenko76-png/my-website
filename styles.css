@@ -1,0 +1,100 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top, #001030, #000820);
+  color: #fff;
+  margin: 0;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+nav {
+  background: rgba(0, 20, 60, 0.8);
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 0 10px #0af;
+}
+
+.tab-btn {
+  background: #002080;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tab-btn:hover {
+  background: #0040ff;
+}
+
+.balance {
+  margin-left: 20px;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+.tab {
+  display: none;
+  padding: 20px;
+}
+
+.tab.active {
+  display: block;
+}
+
+/* Сетка мин */
+#mines-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  grid-gap: 10px;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.cell {
+  width: 80px;
+  height: 80px;
+  background: #003366;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 30px;
+  transition: 0.2s;
+}
+
+.cell:hover {
+  background: #004080;
+}
+
+#shop-items {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.shop-item {
+  background: #002244;
+  border-radius: 10px;
+  padding: 10px;
+  width: 120px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.shop-item img {
+  width: 80px;
+  border-radius: 6px;
+}
+
+.shop-item:hover {
+  background: #0040aa;
+}
