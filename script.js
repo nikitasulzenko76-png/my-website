@@ -1,7 +1,9 @@
+// --- Данные пользователя ---
 let balance = parseInt(localStorage.getItem("balance")) || 100;
 let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
 let multipliers = JSON.parse(localStorage.getItem("multipliers")) || {};
 
+// --- Баланс и профиль ---
 function updateBalance() {
   document.getElementById("balance").textContent = balance.toFixed(0);
   document.getElementById("profile-balance").textContent = balance.toFixed(0);
@@ -21,6 +23,7 @@ function updateTotalMultiplier() {
   document.getElementById("total-mult").textContent = total.toFixed(1);
 }
 
+// --- Переключение вкладок ---
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
@@ -28,7 +31,21 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
-const MINE_COST = 20;
+// --- Ежедневный бонус ---
+function dailyBonus() {
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const lastClaim = localStorage.getItem("lastDailyBonus");
+
+  if (lastClaim !== today) {
+    balance += 300;
+    updateBalance();
+    localStorage.setItem("lastDailyBonus", today);
+    showNotice("+300 монет за ежедневный бонус!", "success");
+  }
+}
+
+// --- Мины ---
+const MINE_COST = 15; // стоимость игры теперь 15 монет
 let minesActive = false;
 const grid = document.getElementById("mines-grid");
 
@@ -55,7 +72,7 @@ function startMines() {
     grid.appendChild(cell);
   }
 
-  showNotice("Игра началась — ищи подарки!", "info");
+  showNotice(`Игра началась — ищи подарки! Стоимость: ${MINE_COST} монет`, "info");
 }
 
 function revealCell(cell, i, mines) {
@@ -78,6 +95,7 @@ function revealCell(cell, i, mines) {
   }
 }
 
+// --- Уведомления ---
 function showNotice(text, type = "info") {
   const old = document.querySelector(".notice");
   if (old) old.remove();
@@ -92,11 +110,14 @@ function showNotice(text, type = "info") {
   }, 2500);
 }
 
+// --- Магазин ---
 const items = [
   { name: "FROST ×1.2", price: 100, mult: 0.2, img: "frost.jpg" },
   { name: "SANTA ×1.5", price: 150, mult: 0.5, img: "santa.jpg" },
   { name: "NEW YEAR ×2", price: 200, mult: 1.0, img: "newyear.jpg" },
   { name: "ICE KING ×3", price: 350, mult: 2.0, img: "iceking.jpg" },
+  { name: "MEDAL SILVER ×2.2", price: 300, mult: 1.2, img: "silver.jpg" },
+  { name: "MEDAL GOLD ×2.5", price: 400, mult: 1.5, img: "gold.jpg" }
 ];
 
 function renderShop() {
@@ -124,15 +145,18 @@ function renderShop() {
   });
 }
 
+// --- Снег ---
 const canvas = document.getElementById("snow");
 const ctx = canvas.getContext("2d");
 let snowflakes = [];
+
 function resize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
 window.addEventListener("resize", resize);
 resize();
+
 function createSnow() {
   for (let i = 0; i < 150; i++) {
     snowflakes.push({
@@ -144,6 +168,7 @@ function createSnow() {
   }
 }
 createSnow();
+
 function drawSnow() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "rgba(255,255,255,0.8)";
@@ -155,6 +180,7 @@ function drawSnow() {
   ctx.fill();
   moveSnow();
 }
+
 function moveSnow() {
   for (let f of snowflakes) {
     f.y += f.d;
@@ -166,6 +192,8 @@ function moveSnow() {
 }
 setInterval(drawSnow, 33);
 
+// --- Инициализация ---
+dailyBonus();
 updateBalance();
 updateInventory();
 renderShop();
