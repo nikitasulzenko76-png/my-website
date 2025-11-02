@@ -1,172 +1,158 @@
-let balance = parseInt(localStorage.getItem("balance")) || 100;
-let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
-let multipliers = JSON.parse(localStorage.getItem("multipliers")) || {};
-
-function updateBalance() {
-  document.getElementById("balance").textContent = balance.toFixed(0);
-  document.getElementById("profile-balance").textContent = balance.toFixed(0);
-  localStorage.setItem("balance", balance);
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: linear-gradient(to bottom, #001432, #000c22);
+  color: #cfdfff;
+  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+  overflow-x: hidden;
 }
 
-function updateInventory() {
-  document.getElementById("inventory").innerHTML =
-    inventory.map(i => `<li>${i}</li>`).join("");
-  localStorage.setItem("inventory", JSON.stringify(inventory));
-  localStorage.setItem("multipliers", JSON.stringify(multipliers));
-  updateTotalMultiplier();
+/* Навигация */
+header nav {
+  background: rgba(0, 15, 40, 0.85);
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.tab-btn {
+  background: #002860;
+  color: #dbe4ff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.tab-btn:hover {
+  background: #0040a0;
+}
+.balance {
+  margin-left: 20px;
+  font-weight: bold;
+  color: #9fc9ff;
 }
 
-function updateTotalMultiplier() {
-  const total = 1 + Object.values(multipliers).reduce((a, b) => a + b, 0);
-  document.getElementById("total-mult").textContent = total.toFixed(1);
+/* Основное */
+main {
+  padding: 20px;
+  min-height: 80vh;
+}
+.tab { display: none; }
+.tab.active { display: block; }
+
+button {
+  background: #003366;
+  border: none;
+  color: #cdd9ff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button:hover {
+  background: #004a99;
 }
 
-document.querySelectorAll(".tab-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-    document.getElementById(btn.dataset.tab).classList.add("active");
-  });
-});
-
-const MINE_COST = 20;
-let minesActive = false;
-const grid = document.getElementById("mines-grid");
-
-document.getElementById("start-mines").addEventListener("click", startMines);
-document.getElementById("restart-mines").addEventListener("click", startMines);
-
-function startMines() {
-  if (balance < MINE_COST) {
-    showNotice("Недостаточно монет", "error");
-    return;
-  }
-  balance -= MINE_COST;
-  updateBalance();
-  minesActive = true;
-  grid.innerHTML = "";
-
-  const mines = new Set();
-  while (mines.size < 3) mines.add(Math.floor(Math.random() * 9));
-
-  for (let i = 0; i < 9; i++) {
-    const cell = document.createElement("div");
-    cell.classList.add("cell");
-    cell.addEventListener("click", () => revealCell(cell, i, mines));
-    grid.appendChild(cell);
-  }
-
-  showNotice("Игра началась — ищи подарки!", "info");
+/* Мины */
+#mines-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 90px);
+  gap: 12px;
+  justify-content: center;
+  margin: 20px auto;
+}
+.cell {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(145deg, #00274d, #001a33);
+  box-shadow: inset 0 0 8px #003a7d;
+  border: 1px solid #003a7d;
+  border-radius: 10px;
+  font-size: 34px;
+  color: #cfdfff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+.cell:hover {
+  background: #003366;
+}
+.cell.revealed { transform: scale(0.96); }
+.cell.crystal {
+  background: #003b73;
+  box-shadow: 0 0 8px rgba(120,180,255,0.5);
+}
+.cell.mine {
+  background: #1a0000;
+  color: #ff3b3b;
+}
+.cell.frozen {
+  filter: brightness(0.5);
 }
 
-function revealCell(cell, i, mines) {
-  if (!minesActive || cell.classList.contains("revealed")) return;
-  cell.classList.add("revealed");
-
-  if (mines.has(i)) {
-    cell.classList.add("mine");
-    cell.textContent = "☠️";
-    minesActive = false;
-    showNotice("Мина! Игра окончена", "error");
-  } else {
-    cell.classList.add("crystal");
-    cell.textContent = "🎁";
-    const totalMult = 1 + Object.values(multipliers).reduce((a, b) => a + b, 0);
-    const win = 15 * totalMult;
-    balance += win;
-    updateBalance();
-    showNotice(`+${win.toFixed(0)} монет (×${totalMult.toFixed(1)})`, "success");
-  }
+/* Магазин */
+#shop-items {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.shop-item {
+  background: #001f44;
+  border-radius: 10px;
+  padding: 10px;
+  width: 150px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.shop-item:hover {
+  background: #002d66;
+}
+.shop-item img {
+  width: 120px;
+  border-radius: 8px;
+  margin-bottom: 8px;
 }
 
-function showNotice(text, type = "info") {
-  const old = document.querySelector(".notice");
-  if (old) old.remove();
-  const notice = document.createElement("div");
-  notice.classList.add("notice", type);
-  notice.textContent = text;
-  document.body.appendChild(notice);
-  setTimeout(() => notice.classList.add("visible"), 50);
-  setTimeout(() => {
-    notice.classList.remove("visible");
-    setTimeout(() => notice.remove(), 300);
-  }, 2500);
+/* Уведомления */
+.notice {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-15px);
+  background: rgba(0, 40, 90, 0.85);
+  border: 1px solid rgba(120, 180, 255, 0.3);
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: #cfdfff;
+  font-size: 15px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  z-index: 1000;
 }
+.notice.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.notice.success { border-color: rgba(0, 255, 200, 0.4); }
+.notice.error { border-color: rgba(255, 100, 100, 0.4); }
 
-const items = [
-  { name: "FROST ×1.2", price: 100, mult: 0.2, img: "frost.jpg" },
-  { name: "SANTA ×1.5", price: 150, mult: 0.5, img: "santa.jpg" },
-  { name: "NEW YEAR ×2", price: 200, mult: 1.0, img: "newyear.jpg" },
-  { name: "ICE KING ×3", price: 350, mult: 2.0, img: "iceking.jpg" },
-];
-
-function renderShop() {
-  const shop = document.getElementById("shop-items");
-  shop.innerHTML = "";
-  items.forEach(item => {
-    const div = document.createElement("div");
-    div.classList.add("shop-item");
-    div.innerHTML = `
-      <img src="${item.img}" alt="${item.name}">
-      <p>${item.name}</p>
-      <p>${item.price} монет</p>
-    `;
-    div.addEventListener("click", () => {
-      if (inventory.includes(item.name)) return showNotice("Уже куплено", "info");
-      if (balance < item.price) return showNotice("Недостаточно монет", "error");
-      balance -= item.price;
-      inventory.push(item.name);
-      multipliers[item.name] = item.mult;
-      updateBalance();
-      updateInventory();
-      showNotice(`Куплено ${item.name}!`, "success");
-    });
-    shop.appendChild(div);
-  });
+/* Снег */
+#snow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
-
-const canvas = document.getElementById("snow");
-const ctx = canvas.getContext("2d");
-let snowflakes = [];
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resize);
-resize();
-function createSnow() {
-  for (let i = 0; i < 150; i++) {
-    snowflakes.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 3 + 1,
-      d: Math.random() + 0.5,
-    });
-  }
-}
-createSnow();
-function drawSnow() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(255,255,255,0.8)";
-  ctx.beginPath();
-  for (let f of snowflakes) {
-    ctx.moveTo(f.x, f.y);
-    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-  }
-  ctx.fill();
-  moveSnow();
-}
-function moveSnow() {
-  for (let f of snowflakes) {
-    f.y += f.d;
-    if (f.y > canvas.height) {
-      f.y = 0;
-      f.x = Math.random() * canvas.width;
-    }
-  }
-}
-setInterval(drawSnow, 33);
-
-updateBalance();
-updateInventory();
-renderShop();
-updateTotalMultiplier();
