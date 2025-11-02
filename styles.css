@@ -89,6 +89,7 @@ button:hover {
 .cell.crystal {
   background: #003b73;
   box-shadow: 0 0 8px rgba(120,180,255,0.5);
+  animation: glow 0.5s ease;
 }
 .cell.mine {
   background: #1a0000;
@@ -96,6 +97,13 @@ button:hover {
 }
 .cell.frozen {
   filter: brightness(0.5);
+}
+
+/* Анимация свечения */
+@keyframes glow {
+  0% { box-shadow: 0 0 0px rgba(120,180,255,0.5); }
+  50% { box-shadow: 0 0 15px rgba(120,180,255,0.8); }
+  100% { box-shadow: 0 0 0px rgba(120,180,255,0.5); }
 }
 
 /* Магазин */
