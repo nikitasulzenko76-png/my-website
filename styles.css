@@ -1,100 +1,151 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top, #001030, #000820);
-  color: #fff;
+/* Общий стиль */
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  background: linear-gradient(to bottom, #001432, #000c22);
+  color: #cfdfff;
+  font-family: "Segoe UI", sans-serif;
   text-align: center;
   overflow-x: hidden;
 }
 
-nav {
-  background: rgba(0, 20, 60, 0.8);
+/* Навигация */
+header nav {
+  background: rgba(0, 15, 40, 0.85);
   padding: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 15px;
-  box-shadow: 0 0 10px #0af;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .tab-btn {
-  background: #002080;
-  color: #fff;
+  background: #002860;
+  color: #dbe4ff;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 10px 15px;
   font-size: 16px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.25s;
 }
-
 .tab-btn:hover {
-  background: #0040ff;
+  background: #0040a0;
 }
 
 .balance {
   margin-left: 20px;
   font-weight: bold;
-  color: #ffd700;
+  color: #9fc9ff;
 }
 
-.tab {
-  display: none;
+main {
   padding: 20px;
+  min-height: 80vh;
 }
 
-.tab.active {
-  display: block;
+.tab { display: none; }
+.tab.active { display: block; }
+
+button {
+  background: #003366;
+  border: none;
+  color: #cdd9ff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button:hover {
+  background: #004a99;
 }
 
-/* Сетка мин */
+/* Мины */
 #mines-grid {
   display: grid;
-  grid-template-columns: repeat(3, 80px);
-  grid-gap: 10px;
+  grid-template-columns: repeat(3, 90px);
+  gap: 12px;
   justify-content: center;
   margin: 20px auto;
 }
 
 .cell {
-  width: 80px;
-  height: 80px;
-  background: #003366;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(145deg, #00274d, #001a33);
+  box-shadow: inset 0 0 8px #003a7d;
+  border: 1px solid #003a7d;
+  border-radius: 10px;
+  transition: all 0.25s ease-in-out;
   cursor: pointer;
-  font-size: 30px;
-  transition: 0.2s;
 }
-
-.cell:hover {
-  background: #004080;
+.cell.revealed { transform: scale(0.96); }
+.cell.crystal {
+  background: radial-gradient(circle at center, #007fff 10%, #001f3f 90%);
+  box-shadow: 0 0 10px 3px rgba(0, 120, 255, 0.6);
 }
+.cell.mine {
+  background: radial-gradient(circle at center, #330000, #000);
+  box-shadow: 0 0 10px 3px rgba(255, 0, 0, 0.4);
+}
+.cell.frozen { filter: brightness(0.5); }
 
+/* Магазин */
 #shop-items {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 20px;
 }
-
 .shop-item {
-  background: #002244;
+  background: #001f44;
   border-radius: 10px;
   padding: 10px;
-  width: 120px;
+  width: 150px;
   text-align: center;
   cursor: pointer;
   transition: 0.3s;
 }
-
+.shop-item:hover {
+  background: #002d66;
+}
 .shop-item img {
-  width: 80px;
-  border-radius: 6px;
+  width: 100px;
+  border-radius: 8px;
 }
 
-.shop-item:hover {
-  background: #0040aa;
+/* Эстетичные уведомления */
+.notice {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-15px);
+  background: rgba(0, 40, 90, 0.85);
+  border: 1px solid rgba(120, 180, 255, 0.3);
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: #cfdfff;
+  font-size: 15px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+}
+.notice.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.notice.success { border-color: rgba(0, 255, 200, 0.4); }
+.notice.error { border-color: rgba(255, 100, 100, 0.4); }
+
+/* Снег */
+#snow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
