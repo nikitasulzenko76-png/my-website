@@ -1,4 +1,3 @@
-/* Общий стиль */
 html, body {
   margin: 0;
   padding: 0;
@@ -20,7 +19,6 @@ header nav {
   gap: 15px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-
 .tab-btn {
   background: #002860;
   color: #dbe4ff;
@@ -34,18 +32,17 @@ header nav {
 .tab-btn:hover {
   background: #0040a0;
 }
-
 .balance {
   margin-left: 20px;
   font-weight: bold;
   color: #9fc9ff;
 }
 
+/* Основное */
 main {
   padding: 20px;
   min-height: 80vh;
 }
-
 .tab { display: none; }
 .tab.active { display: block; }
 
@@ -70,7 +67,6 @@ button:hover {
   justify-content: center;
   margin: 20px auto;
 }
-
 .cell {
   width: 90px;
   height: 90px;
@@ -78,19 +74,29 @@ button:hover {
   box-shadow: inset 0 0 8px #003a7d;
   border: 1px solid #003a7d;
   border-radius: 10px;
-  transition: all 0.25s ease-in-out;
+  font-size: 34px;
+  color: #cfdfff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+.cell:hover {
+  background: #003366;
 }
 .cell.revealed { transform: scale(0.96); }
 .cell.crystal {
-  background: radial-gradient(circle at center, #007fff 10%, #001f3f 90%);
-  box-shadow: 0 0 10px 3px rgba(0, 120, 255, 0.6);
+  background: #003b73;
+  box-shadow: 0 0 8px rgba(120,180,255,0.5);
 }
 .cell.mine {
-  background: radial-gradient(circle at center, #330000, #000);
-  box-shadow: 0 0 10px 3px rgba(255, 0, 0, 0.4);
+  background: #1a0000;
+  color: #ff3b3b;
 }
-.cell.frozen { filter: brightness(0.5); }
+.cell.frozen {
+  filter: brightness(0.5);
+}
 
 /* Магазин */
 #shop-items {
@@ -111,12 +117,8 @@ button:hover {
 .shop-item:hover {
   background: #002d66;
 }
-.shop-item img {
-  width: 100px;
-  border-radius: 8px;
-}
 
-/* Эстетичные уведомления */
+/* Уведомления */
 .notice {
   position: fixed;
   top: 30px;
