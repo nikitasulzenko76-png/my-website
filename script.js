@@ -22,7 +22,7 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
-// === МИНЫ (ледяной стиль) ===
+// === МИНЫ ===
 const MINE_COST = 20;
 let minesActive = false;
 let revealedCount = 0;
@@ -53,7 +53,7 @@ function startMines() {
     grid.appendChild(cell);
   }
 
-  showNotice("Игра началась — ищи кристаллы", "info");
+  showNotice("Игра началась — ищи подарки", "info");
 }
 
 function revealCell(cell, i, mines) {
@@ -62,8 +62,9 @@ function revealCell(cell, i, mines) {
 
   if (mines.has(i)) {
     cell.classList.add("mine");
+    cell.textContent = "☠️";
     minesActive = false;
-    showNotice("Мина! Раунд окончен", "error");
+    showNotice("Мина! Игра окончена", "error");
     setTimeout(() => {
       document.querySelectorAll(".cell").forEach(c => {
         if (!c.classList.contains("revealed")) c.classList.add("frozen");
@@ -71,13 +72,14 @@ function revealCell(cell, i, mines) {
     }, 300);
   } else {
     cell.classList.add("crystal");
+    cell.textContent = "🎁";
     revealedCount++;
     balance += 15;
     updateBalance();
 
     if (revealedCount === 6) {
       minesActive = false;
-      showNotice("Ты нашёл все кристаллы", "success");
+      showNotice("Ты собрал все подарки!", "success");
     }
   }
 }
