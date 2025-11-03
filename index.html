@@ -1,49 +1,96 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Мины — точ в точ</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мины</title>
+<style>
+body {
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+#game {
+  display: none;
+  grid-template-columns: repeat(3,80px);
+  gap: 8px;
+  margin-top: 20px;
+}
+.cell {
+  width: 80px;
+  height: 80px;
+  background: #283e63;
+  border-radius: 10px;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.cell.revealed { cursor: default; }
+.cell.gift { background: #28a745; }
+.cell.mine { background: #d33; }
+button {
+  background: #ffcc00;
+  color: #222;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:hover { background: #ffdd33; }
+</style>
 </head>
 <body>
-  <div class="app-bg">
-    <header class="top-bar">
-      <div class="title">Мины</div>
-      <div class="subtitle">Стоимость игры: <span id="mine-cost-label">15</span> монет. Найди подарки и избегай мин.</div>
-    </header>
 
-    <main class="card-wrap">
-      <section class="card">
-        <button id="start-mines" class="btn start-btn">Начать игру</button>
+<h1>🎁 Игра "Мины"</h1>
+<button id="playBtn">Играть</button>
 
-        <div id="mines-grid" class="grid" aria-hidden="false">
-          <!-- grid cells created by JS -->
-        </div>
+<div id="game"></div>
 
-        <button id="restart-mines" class="btn replay-btn">Сыграть снова</button>
-      </section>
-    </main>
+<script>
+const game = document.getElementById("game");
+const playBtn = document.getElementById("playBtn");
 
-    <nav class="bottom-nav">
-      <button class="tab-btn active"><span class="icon">▦</span><span>Мины</span></button>
-      <button class="tab-btn"><span class="icon">👜</span><span>Магазин</span></button>
-      <button class="tab-btn"><span class="icon">⚔️</span><span>Дуэли</span></button>
-      <button class="tab-btn"><span class="icon">👤</span><span>Профиль</span></button>
-    </nav>
-  </div>
+let layout = [];
 
-  <!-- Inline SVG templates (used by JS) -->
-  <svg style="display:none;">
-    <symbol id="svg-gift" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7h16zm-4-7.5A2.5 2.5 0 0 0 13.5 7H12v-.5c0-1.1.9-2 2-2 .55 0 1.05.22 1.41.59A2 2 0 0 1 16 4.5zM8 4.5A2 2 0 0 1 9.59 6c.36-.37.86-.59 1.41-.59 1.1 0 2 .9 2 2V7H6.5A2.5 2.5 0 0 0 8 4.5z"></path>
-    </symbol>
+function generateLayout() {
+  layout = [];
+  for (let i = 0; i < 9; i++) {
+    layout.push(Math.random() < 0.3 ? "💣" : "🎁");
+  }
+}
 
-    <symbol id="svg-mine" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm9 5h-3.2l1.6-1.6-1.4-1.4L16.4 9H15V7h2.4l1.6-1.6L17.6 4 16 5.6V3h-2v2.6L11.4 4 10 5.4 11.6 7H9v2h1.6L7 11.4 8.4 13 10 11.6V14H8v2h2.6L7.4 18 9 19.6 11.6 17.2V20h2v-2.8L15 19.6 16.4 18 14 15.6V14h2v-2h-1.6L18 10.4 16.6 9 15 10.6V8h2v2.4L21 8.6 22.4 10 20 12z"></path>
-    </symbol>
-  </svg>
+function startGame() {
+  game.innerHTML = "";
+  generateLayout();
+  layout.forEach((val, idx) => {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.addEventListener("click", () => revealCell(cell, val));
+    game.appendChild(cell);
+  });
+  game.style.display = "grid";
+}
 
-  <script src="script.js"></script>
+function revealCell(cell, value) {
+  if (cell.classList.contains("revealed")) return;
+  cell.classList.add("revealed");
+  cell.textContent = value;
+  if (value === "💣") cell.classList.add("mine");
+  else cell.classList.add("gift");
+}
+
+playBtn.addEventListener("click", startGame);
+</script>
+
 </body>
 </html>
