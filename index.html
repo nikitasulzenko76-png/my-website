@@ -8,32 +8,34 @@
 </head>
 <body>
 
-<!-- Баланс сверху -->
-<div class="balance">Баланс: <span id="balance">0</span></div>
+<!-- Баланс -->
+<header class="top-bar">
+  <div>Баланс: <span id="balance">0</span> 💰</div>
+</header>
 
 <main>
   <!-- Мины -->
   <section id="mines" class="tab active">
-    <h2>Мины</h2>
-    <p>Стоимость игры: <span id="mine-cost-label">15</span> монет. Найди подарки и избегай мин.</p>
-    <button id="start-mines">Начать игру</button>
-    <div id="mines-grid"></div>
-    <button id="restart-mines">Сыграть снова</button>
+    <h2>💣 Мины</h2>
+    <p>Стоимость игры: <span id="mine-cost-label">15</span> монет. Найди подарки и избегай мин!</p>
+    <button id="start-mines" class="glow-btn">Начать игру</button>
+    <div id="mines-grid" class="grid"></div>
+    <button id="restart-mines" class="glow-btn">Сыграть снова</button>
   </section>
 
   <!-- Магазин -->
   <section id="shop" class="tab">
-    <h2>Магазин</h2>
+    <h2>🛍 Магазин</h2>
     <div id="shop-items" class="shop-grid"></div>
   </section>
 
   <!-- Дуэли -->
   <section id="duel" class="tab">
-    <h2>Дуэли ⚔️</h2>
+    <h2>⚔️ Дуэли</h2>
     <div class="duel-row">
       <input id="duel-player1" placeholder="Ваш ID">
       <input id="duel-player2" placeholder="ID друга">
-      <button id="duel-start">Начать дуэль</button>
+      <button id="duel-start" class="glow-btn">Начать дуэль</button>
     </div>
     <div id="duel-arena" class="hidden">
       <h3 id="duel-label"></h3>
@@ -48,28 +50,27 @@
         </div>
       </div>
       <p id="duel-turn-info"></p>
-      <button id="duel-forfeit">Сдаться</button>
+      <button id="duel-forfeit" class="glow-btn small">Сдаться</button>
     </div>
   </section>
 
   <!-- Профиль -->
   <section id="profile" class="tab">
-    <h2>Профиль</h2>
+    <h2>👤 Профиль</h2>
     <div class="profile-row"><strong>ID игрока:</strong> <span id="player-id"></span></div>
     <div class="profile-row"><strong>Баланс:</strong> <span id="profile-balance"></span></div>
-    <div class="profile-row"><strong>Текущий множитель:</strong> ×<span id="total-mult">1.0</span></div>
-
-    <h3>Купленные предметы и медали</h3>
+    <div class="profile-row"><strong>Множитель:</strong> ×<span id="total-mult">1.0</span></div>
+    <h3>🏅 Медали и предметы</h3>
     <div id="inventory" class="inventory-grid"></div>
   </section>
 </main>
 
-<!-- Нижние вкладки -->
-<nav>
-  <button class="tab-btn active" data-tab="mines">Мины</button>
-  <button class="tab-btn" data-tab="shop">Магазин</button>
-  <button class="tab-btn" data-tab="duel">Дуэли</button>
-  <button class="tab-btn" data-tab="profile">Профиль</button>
+<!-- Нижняя панель -->
+<nav class="bottom-nav">
+  <button class="tab-btn active" data-tab="mines">💣<span>Мины</span></button>
+  <button class="tab-btn" data-tab="shop">🛍<span>Магазин</span></button>
+  <button class="tab-btn" data-tab="duel">⚔️<span>Дуэли</span></button>
+  <button class="tab-btn" data-tab="profile">👤<span>Профиль</span></button>
 </nav>
 
 <script src="script.js"></script>
