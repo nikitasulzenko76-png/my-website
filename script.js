@@ -39,13 +39,14 @@ function updateTotalMultiplier(){
   document.getElementById("total-mult").textContent = total.toFixed(1);
 }
 
-// Делегирование для табов
-document.body.addEventListener("click", function(e){
-  if(e.target.matches(".tab-btn")){
+// Вкладки
+document.body.addEventListener("click", (e)=>{
+  if(e.target.closest(".tab-btn")){
     document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-    e.target.classList.add("active");
-    document.querySelectorAll(".tab").forEach(tab=>tab.classList.remove("active"));
-    document.getElementById(e.target.dataset.tab).classList.add("active");
+    e.target.closest(".tab-btn").classList.add("active");
+    const tab = e.target.closest(".tab-btn").dataset.tab;
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.getElementById(tab).classList.add("active");
   }
 });
 
@@ -68,32 +69,20 @@ function renderShop(){
     div.classList.add("shop-item");
     div.innerHTML = `<img src="${item.img}" alt="${item.name}"><p>${item.name}</p><p>${item.price} монет</p>`;
     div.addEventListener("click", ()=>{
-      if(inventory.find(i=>i.name===item.name)) return showNotice("Уже куплено","info");
-      if(balance<item.price) return showNotice("Недостаточно монет","error");
+      if(inventory.find(i=>i.name===item.name)) return alert("Уже куплено");
+      if(balance<item.price) return alert("Недостаточно монет");
       balance -= item.price;
       inventory.push({name:item.name,img:item.img});
       if(item.mult) multipliers[item.name]=item.mult;
       updateBalance();
       updateInventory();
-      showNotice(`Куплено ${item.name}!`,"success");
+      alert(`Куплено ${item.name}!`);
     });
     shop.appendChild(div);
   });
 }
 
-// Уведомления
-function showNotice(text,type="info"){
-  const old = document.querySelector(".notice"); if(old) old.remove();
-  const notice = document.createElement("div");
-  notice.classList.add("notice",type);
-  notice.textContent = text;
-  document.body.appendChild(notice);
-  setTimeout(()=>notice.classList.add("visible"),50);
-  setTimeout(()=>{notice.classList.remove("visible"); setTimeout(()=>notice.remove(),300)},2500);
-}
-
-// Инициализация
 updateBalance();
 updateInventory();
-renderShop();
 updateTotalMultiplier();
+renderShop();
