@@ -1,45 +1,76 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coin Battle ❄️</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <nav>
-      <button class="tab-btn" data-tab="mines">Мины</button>
-      <button class="tab-btn" data-tab="shop">Магазин</button>
-      <button class="tab-btn" data-tab="profile">Профиль</button>
-      <div class="balance">Баланс: <span id="balance">0</span></div>
-    </nav>
-  </header>
+<header>
+  <nav>
+    <button class="tab-btn" data-tab="mines">Мины</button>
+    <button class="tab-btn" data-tab="shop">Магазин</button>
+    <button class="tab-btn" data-tab="duel">Дуэли</button>
+    <button class="tab-btn" data-tab="profile">Профиль</button>
+    <div class="balance">Баланс: <span id="balance">0</span></div>
+  </nav>
+</header>
 
-  <main>
-    <section id="mines" class="tab active">
-      <h2>Мины</h2>
-      <p>Стоимость игры: 20 монет. Найди подарки и избегай мин.</p>
-      <button id="start-mines">Начать игру</button>
-      <div id="mines-grid"></div>
-      <button id="restart-mines">Сыграть снова</button>
-    </section>
+<main>
+  <!-- Mines -->
+  <section id="mines" class="tab active">
+    <h2>Мины</h2>
+    <p>Стоимость игры: <span id="mine-cost-label">15</span> монет. Найди подарки и избегай мин.</p>
+    <button id="start-mines">Начать игру</button>
+    <div id="mines-grid"></div>
+    <button id="restart-mines">Сыграть снова</button>
+  </section>
 
-    <section id="shop" class="tab">
-      <h2>Магазин</h2>
-      <div id="shop-items"></div>
-    </section>
+  <!-- Shop -->
+  <section id="shop" class="tab">
+    <h2>Магазин</h2>
+    <div id="shop-items"></div>
+  </section>
 
-    <section id="profile" class="tab">
-      <h2>Профиль</h2>
-      <p>Баланс: <span id="profile-balance"></span></p>
-      <p>Текущий множитель: ×<span id="total-mult">1.0</span></p>
-      <h3>Купленные предметы:</h3>
-      <ul id="inventory"></ul>
-    </section>
-  </main>
+  <!-- Duel -->
+  <section id="duel" class="tab">
+    <h2>Дуэли ⚔️</h2>
+    <div class="duel-row">
+      <input id="duel-player1" placeholder="Игрок 1 ID" />
+      <input id="duel-player2" placeholder="Игрок 2 ID" />
+      <button id="duel-start">Начать дуэль</button>
+    </div>
+    <div id="duel-arena" class="hidden">
+      <h3 id="duel-label"></h3>
+      <div class="duel-boards">
+        <div>
+          <h4>Поле <span id="duel-p1-name"></span></h4>
+          <div id="duel-board1" class="board"></div>
+        </div>
+        <div>
+          <h4>Поле <span id="duel-p2-name"></span></h4>
+          <div id="duel-board2" class="board clickable"></div>
+        </div>
+      </div>
+      <p id="duel-turn-info"></p>
+      <button id="duel-forfeit">Сдаться</button>
+    </div>
+  </section>
 
-  <canvas id="snow"></canvas>
-  <script src="script.js"></script>
+  <!-- Profile -->
+  <section id="profile" class="tab">
+    <h2>Профиль</h2>
+    <p>ID игрока: <span id="player-id"></span></p>
+    <p>Баланс: <span id="profile-balance"></span></p>
+    <p>Текущий множитель: ×<span id="total-mult">1.0</span></p>
+
+    <h3>Купленные предметы и медали</h3>
+    <div id="inventory" class="inventory-grid"></div>
+  </section>
+</main>
+
+<canvas id="snow"></canvas>
+<script src="script.js"></script>
 </body>
 </html>
