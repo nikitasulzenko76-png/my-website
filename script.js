@@ -33,7 +33,7 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
 
 // --- Ежедневный бонус ---
 function dailyBonus() {
-  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const today = new Date().toISOString().slice(0, 10);
   const lastClaim = localStorage.getItem("lastDailyBonus");
 
   if (lastClaim !== today) {
@@ -45,7 +45,7 @@ function dailyBonus() {
 }
 
 // --- Мины ---
-const MINE_COST = 15; // стоимость игры теперь 15 монет
+const MINE_COST = 15;
 let minesActive = false;
 const grid = document.getElementById("mines-grid");
 
@@ -95,29 +95,14 @@ function revealCell(cell, i, mines) {
   }
 }
 
-// --- Уведомления ---
-function showNotice(text, type = "info") {
-  const old = document.querySelector(".notice");
-  if (old) old.remove();
-  const notice = document.createElement("div");
-  notice.classList.add("notice", type);
-  notice.textContent = text;
-  document.body.appendChild(notice);
-  setTimeout(() => notice.classList.add("visible"), 50);
-  setTimeout(() => {
-    notice.classList.remove("visible");
-    setTimeout(() => notice.remove(), 300);
-  }, 2500);
-}
-
 // --- Магазин ---
 const items = [
-  { name: "FROST ×1.2", price: 100, mult: 0.2, img: "frost.jpg" },
-  { name: "SANTA ×1.5", price: 150, mult: 0.5, img: "santa.jpg" },
-  { name: "NEW YEAR ×2", price: 200, mult: 1.0, img: "newyear.jpg" },
-  { name: "ICE KING ×3", price: 350, mult: 2.0, img: "iceking.jpg" },
-  { name: "MEDAL SILVER ×2.2", price: 300, mult: 1.2, img: "silver.jpg" },
-  { name: "MEDAL GOLD ×2.5", price: 400, mult: 1.5, img: "gold.jpg" }
+  { name: "FROST ×1.2", price: 100, mult: 0.2, img: "https://i.imgur.com/Knw9D7K.png" },
+  { name: "SANTA ×1.5", price: 150, mult: 0.5, img: "https://i.imgur.com/Yv0wc6I.png" },
+  { name: "NEW YEAR ×2", price: 200, mult: 1.0, img: "https://i.imgur.com/WX7tkFq.png" },
+  { name: "ICE KING ×3", price: 350, mult: 2.0, img: "https://i.imgur.com/62uozc1.png" },
+  { name: "MEDAL SILVER ×2.2", price: 300, mult: 1.2, img: "https://i.imgur.com/n1jMPlX.png" },
+  { name: "MEDAL GOLD ×2.5", price: 400, mult: 1.5, img: "https://i.imgur.com/EHbxTtM.png" }
 ];
 
 function renderShop() {
@@ -128,7 +113,7 @@ function renderShop() {
     div.classList.add("shop-item");
     div.innerHTML = `
       <img src="${item.img}" alt="${item.name}">
-      <p>${item.name}</p>
+      <p><b>${item.name}</b></p>
       <p>${item.price} монет</p>
     `;
     div.addEventListener("click", () => {
@@ -145,52 +130,20 @@ function renderShop() {
   });
 }
 
-// --- Снег ---
-const canvas = document.getElementById("snow");
-const ctx = canvas.getContext("2d");
-let snowflakes = [];
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+// --- Уведомления ---
+function showNotice(text, type = "info") {
+  const old = document.querySelector(".notice");
+  if (old) old.remove();
+  const notice = document.createElement("div");
+  notice.classList.add("notice", type);
+  notice.textContent = text;
+  document.body.appendChild(notice);
+  setTimeout(() => notice.classList.add("visible"), 50);
+  setTimeout(() => {
+    notice.classList.remove("visible");
+    setTimeout(() => notice.remove(), 300);
+  }, 2500);
 }
-window.addEventListener("resize", resize);
-resize();
-
-function createSnow() {
-  for (let i = 0; i < 150; i++) {
-    snowflakes.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 3 + 1,
-      d: Math.random() + 0.5,
-    });
-  }
-}
-createSnow();
-
-function drawSnow() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(255,255,255,0.8)";
-  ctx.beginPath();
-  for (let f of snowflakes) {
-    ctx.moveTo(f.x, f.y);
-    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-  }
-  ctx.fill();
-  moveSnow();
-}
-
-function moveSnow() {
-  for (let f of snowflakes) {
-    f.y += f.d;
-    if (f.y > canvas.height) {
-      f.y = 0;
-      f.x = Math.random() * canvas.width;
-    }
-  }
-}
-setInterval(drawSnow, 33);
 
 // --- Инициализация ---
 dailyBonus();
