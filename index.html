@@ -1,78 +1,49 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coin Battle ❄️</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Мины — точ в точ</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="app-bg">
+    <header class="top-bar">
+      <div class="title">Мины</div>
+      <div class="subtitle">Стоимость игры: <span id="mine-cost-label">15</span> монет. Найди подарки и избегай мин.</div>
+    </header>
 
-<!-- Баланс -->
-<header class="top-bar">
-  <div>Баланс: <span id="balance">0</span> 💰</div>
-</header>
+    <main class="card-wrap">
+      <section class="card">
+        <button id="start-mines" class="btn start-btn">Начать игру</button>
 
-<main>
-  <!-- Мины -->
-  <section id="mines" class="tab active">
-    <h2>💣 Мины</h2>
-    <p>Стоимость игры: <span id="mine-cost-label">15</span> монет. Найди подарки и избегай мин!</p>
-    <button id="start-mines" class="glow-btn">Начать игру</button>
-    <div id="mines-grid" class="grid"></div>
-    <button id="restart-mines" class="glow-btn">Сыграть снова</button>
-  </section>
-
-  <!-- Магазин -->
-  <section id="shop" class="tab">
-    <h2>🛍 Магазин</h2>
-    <div id="shop-items" class="shop-grid"></div>
-  </section>
-
-  <!-- Дуэли -->
-  <section id="duel" class="tab">
-    <h2>⚔️ Дуэли</h2>
-    <div class="duel-row">
-      <input id="duel-player1" placeholder="Ваш ID">
-      <input id="duel-player2" placeholder="ID друга">
-      <button id="duel-start" class="glow-btn">Начать дуэль</button>
-    </div>
-    <div id="duel-arena" class="hidden">
-      <h3 id="duel-label"></h3>
-      <div class="duel-boards">
-        <div>
-          <h4>Поле <span id="duel-p1-name"></span></h4>
-          <div id="duel-board1" class="board"></div>
+        <div id="mines-grid" class="grid" aria-hidden="false">
+          <!-- grid cells created by JS -->
         </div>
-        <div>
-          <h4>Поле <span id="duel-p2-name"></span></h4>
-          <div id="duel-board2" class="board clickable"></div>
-        </div>
-      </div>
-      <p id="duel-turn-info"></p>
-      <button id="duel-forfeit" class="glow-btn small">Сдаться</button>
-    </div>
-  </section>
 
-  <!-- Профиль -->
-  <section id="profile" class="tab">
-    <h2>👤 Профиль</h2>
-    <div class="profile-row"><strong>ID игрока:</strong> <span id="player-id"></span></div>
-    <div class="profile-row"><strong>Баланс:</strong> <span id="profile-balance"></span></div>
-    <div class="profile-row"><strong>Множитель:</strong> ×<span id="total-mult">1.0</span></div>
-    <h3>🏅 Медали и предметы</h3>
-    <div id="inventory" class="inventory-grid"></div>
-  </section>
-</main>
+        <button id="restart-mines" class="btn replay-btn">Сыграть снова</button>
+      </section>
+    </main>
 
-<!-- Нижняя панель -->
-<nav class="bottom-nav">
-  <button class="tab-btn active" data-tab="mines">💣<span>Мины</span></button>
-  <button class="tab-btn" data-tab="shop">🛍<span>Магазин</span></button>
-  <button class="tab-btn" data-tab="duel">⚔️<span>Дуэли</span></button>
-  <button class="tab-btn" data-tab="profile">👤<span>Профиль</span></button>
-</nav>
+    <nav class="bottom-nav">
+      <button class="tab-btn active"><span class="icon">▦</span><span>Мины</span></button>
+      <button class="tab-btn"><span class="icon">👜</span><span>Магазин</span></button>
+      <button class="tab-btn"><span class="icon">⚔️</span><span>Дуэли</span></button>
+      <button class="tab-btn"><span class="icon">👤</span><span>Профиль</span></button>
+    </nav>
+  </div>
 
-<script src="script.js"></script>
+  <!-- Inline SVG templates (used by JS) -->
+  <svg style="display:none;">
+    <symbol id="svg-gift" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7h16zm-4-7.5A2.5 2.5 0 0 0 13.5 7H12v-.5c0-1.1.9-2 2-2 .55 0 1.05.22 1.41.59A2 2 0 0 1 16 4.5zM8 4.5A2 2 0 0 1 9.59 6c.36-.37.86-.59 1.41-.59 1.1 0 2 .9 2 2V7H6.5A2.5 2.5 0 0 0 8 4.5z"></path>
+    </symbol>
+
+    <symbol id="svg-mine" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm9 5h-3.2l1.6-1.6-1.4-1.4L16.4 9H15V7h2.4l1.6-1.6L17.6 4 16 5.6V3h-2v2.6L11.4 4 10 5.4 11.6 7H9v2h1.6L7 11.4 8.4 13 10 11.6V14H8v2h2.6L7.4 18 9 19.6 11.6 17.2V20h2v-2.8L15 19.6 16.4 18 14 15.6V14h2v-2h-1.6L18 10.4 16.6 9 15 10.6V8h2v2.4L21 8.6 22.4 10 20 12z"></path>
+    </symbol>
+  </svg>
+
+  <script src="script.js"></script>
 </body>
 </html>
