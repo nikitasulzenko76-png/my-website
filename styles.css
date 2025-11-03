@@ -1,62 +1,103 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: linear-gradient(to bottom, #001432, #000c22);
-  color: #cfdfff;
-  font-family: "Segoe UI", sans-serif;
-  text-align: center;
-  overflow-x: hidden;
+* {
+  box-sizing: border-box;
 }
 
-/* Навигация */
-header nav {
-  background: rgba(0, 15, 40, 0.85);
-  padding: 10px;
+body {
+  margin: 0;
+  font-family: "Comic Sans MS", "Poppins", sans-serif;
+  background: #87cefa;
+  background-image: linear-gradient(to bottom, #87cefa 0%, #b0e0ff 100%);
+  color: #222;
+  text-align: center;
+}
+
+/* Верхняя панель */
+header {
+  background: #ffcc00;
+  padding: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.tab-btn {
-  background: #002860;
-  color: #dbe4ff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 15px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.25s;
-}
-.tab-btn:hover {
-  background: #0040a0;
-}
-.balance {
-  margin-left: 20px;
-  font-weight: bold;
-  color: #9fc9ff;
+  gap: 10px;
+  flex-wrap: wrap;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.15);
 }
 
-/* Основное */
+/* Вкладки */
+.tab-btn {
+  background: #ff7b1a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #cc5f12;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  background: #ffa63d;
+  transform: translateY(-2px);
+}
+
+/* Баланс */
+.balance {
+  background: #ffcc00;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  color: #333;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+}
+
+/* Контент */
 main {
   padding: 20px;
-  min-height: 80vh;
 }
-.tab { display: none; }
-.tab.active { display: block; }
 
-button {
-  background: #003366;
-  border: none;
-  color: #cdd9ff;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
+.tab {
+  display: none;
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 5px 0 rgba(0,0,0,0.15);
 }
+
+.tab.active {
+  display: block;
+}
+
+/* Цвета вкладок */
+#mines {
+  background: #ffe45c;
+}
+#shop {
+  background: #d7b0ff;
+}
+#profile {
+  background: #9effa3;
+}
+
+/* Кнопки */
+button {
+  background: #00a85a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  padding: 12px 20px;
+  font-size: 16px;
+  box-shadow: 0 4px 0 #00743e;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
 button:hover {
-  background: #004a99;
+  background: #00cc6e;
+  transform: translateY(-2px);
 }
 
 /* Мины */
@@ -67,43 +108,38 @@ button:hover {
   justify-content: center;
   margin: 20px auto;
 }
+
 .cell {
   width: 90px;
   height: 90px;
-  background: linear-gradient(145deg, #00274d, #001a33);
-  box-shadow: inset 0 0 8px #003a7d;
-  border: 1px solid #003a7d;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 2px #ccc;
   font-size: 34px;
-  color: #cfdfff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.25s ease-in-out;
-}
-.cell:hover {
-  background: #003366;
-}
-.cell.revealed { transform: scale(0.96); }
-.cell.crystal {
-  background: #003b73;
-  box-shadow: 0 0 8px rgba(120,180,255,0.5);
-  animation: glow 0.5s ease;
-}
-.cell.mine {
-  background: #1a0000;
-  color: #ff3b3b;
-}
-.cell.frozen {
-  filter: brightness(0.5);
+  transition: all 0.25s;
 }
 
-/* Анимация свечения */
-@keyframes glow {
-  0% { box-shadow: 0 0 0px rgba(120,180,255,0.5); }
-  50% { box-shadow: 0 0 15px rgba(120,180,255,0.8); }
-  100% { box-shadow: 0 0 0px rgba(120,180,255,0.5); }
+.cell:hover {
+  background: #f0f0f0;
+}
+
+.cell.revealed {
+  transform: scale(0.95);
+}
+
+.cell.crystal {
+  background: #c8ffcb;
+  box-shadow: 0 0 10px rgba(0, 200, 0, 0.5);
+}
+
+.cell.mine {
+  background: #ffb3b3;
+  color: #c00;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
 /* Магазин */
@@ -113,20 +149,23 @@ button:hover {
   flex-wrap: wrap;
   gap: 20px;
 }
+
 .shop-item {
-  background: #001f44;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 15px;
   padding: 10px;
-  width: 150px;
-  text-align: center;
+  width: 140px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.2);
   cursor: pointer;
-  transition: 0.3s;
+  transition: transform 0.2s;
 }
+
 .shop-item:hover {
-  background: #002d66;
+  transform: translateY(-3px);
 }
+
 .shop-item img {
-  width: 120px;
+  width: 100px;
   border-radius: 8px;
   margin-bottom: 8px;
 }
@@ -134,33 +173,36 @@ button:hover {
 /* Уведомления */
 .notice {
   position: fixed;
-  top: 30px;
+  top: 25px;
   left: 50%;
   transform: translateX(-50%) translateY(-15px);
-  background: rgba(0, 40, 90, 0.85);
-  border: 1px solid rgba(120, 180, 255, 0.3);
+  background: #fff;
   border-radius: 8px;
-  padding: 10px 20px;
-  color: #cfdfff;
+  padding: 12px 20px;
   font-size: 15px;
+  font-weight: bold;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
   opacity: 0;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
+  transition: all 0.3s;
   z-index: 1000;
 }
+
 .notice.visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
-.notice.success { border-color: rgba(0, 255, 200, 0.4); }
-.notice.error { border-color: rgba(255, 100, 100, 0.4); }
 
-/* Снег */
-#snow {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  width: 100%;
-  height: 100%;
+.notice.success {
+  border: 2px solid #00b400;
+  color: #008000;
 }
+.notice.error {
+  border: 2px solid #e10000;
+  color: #b00000;
+}
+.notice.info {
+  border: 2px solid #0080ff;
+  color: #004080;
+}
+
+ul { list-style: none; padding: 0; }
