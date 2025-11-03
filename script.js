@@ -1,231 +1,200 @@
-// Защищаем выполнение скрипта до полной загрузки DOM
-document.addEventListener('DOMContentLoaded', () => {
-  // --- Константы и элементы ---
-  const MINE_COST = 15;
-  const CELL_COUNT = 9;
+// --- Данные пользователя ---
+let balance = parseInt(localStorage.getItem("balance")) || 100;
+let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+let multipliers = JSON.parse(localStorage.getItem("multipliers")) || {};
 
-  const startBtn = document.getElementById('start-mines');
-  const restartBtn = document.getElementById('restart-mines');
-  const gridEl = document.getElementById('mines-grid');
-  const shopEl = document.getElementById('shop-items');
-  const invEl = document.getElementById('inventory');
-  const playerIdEl = document.getElementById('player-id');
-  const profileBalanceEl = document.getElementById('profile-balance');
-  const headerBalanceEl = document.getElementById('balance');
+// --- Баланс и профиль ---
+function updateBalance() {
+  document.getElementById("balance").textContent = balance.toFixed(0);
+  document.getElementById("profile-balance").textContent = balance.toFixed(0);
+  localStorage.setItem("balance", balance);
+}
 
-  // --- Вкладки (работают) ---
-  document.body.addEventListener('click', (e) => {
-    const btn = e.target.closest('.tab-btn');
-    if (!btn) return;
-    const tabName = btn.dataset.tab;
-    if (!tabName) return;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    const section = document.getElementById(tabName);
-    if (section) section.classList.add('active');
+function updateInventory() {
+  document.getElementById("inventory").innerHTML =
+    inventory.map(i => `<li>${i}</li>`).join("");
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+  localStorage.setItem("multipliers", JSON.stringify(multipliers));
+  updateTotalMultiplier();
+}
+
+function updateTotalMultiplier() {
+  const total = 1 + Object.values(multipliers).reduce((a, b) => a + b, 0);
+  document.getElementById("total-mult").textContent = total.toFixed(1);
+}
+
+// --- Переключение вкладок ---
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+    document.getElementById(btn.dataset.tab).classList.add("active");
   });
-
-  // --- Игрок / баланс / инвентарь ---
-  let balance = parseInt(localStorage.getItem('balance')) || 100;
-  let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
-  let multipliers = JSON.parse(localStorage.getItem('multipliers')) || {};
-  const playerId = localStorage.getItem('playerId') || String(Math.floor(Math.random()*900000)+100000);
-  localStorage.setItem('playerId', playerId);
-  playerIdEl.textContent = playerId;
-
-  function updateBalanceUI(){
-    // показываем и в шапке, и в профиле
-    if (headerBalanceEl) headerBalanceEl.textContent = balance.toFixed(0);
-    if (profileBalanceEl) profileBalanceEl.textContent = balance.toFixed(0);
-    localStorage.setItem('balance', balance);
-  }
-
-  function updateInventoryUI(){
-    invEl.innerHTML = '';
-    inventory.forEach(it => {
-      const d = document.createElement('div');
-      d.className = 'shop-item';
-      d.innerHTML = `<p style="font-weight:700">${it.name}</p>`;
-      invEl.appendChild(d);
-    });
-    localStorage.setItem('inventory', JSON.stringify(inventory));
-    localStorage.setItem('multipliers', JSON.stringify(multipliers));
-  }
-
-  updateBalanceUI();
-  updateInventoryUI();
-
-  // --- Магазин (демо) ---
-  const items = [
-    {name:"FROST ×1.2", price:300, mult:0.2},
-    {name:"MEDAL GOLD", price:450, mult:0},
-    {name:"NEW YEAR ×2", price:600, mult:1.0},
-  ];
-
-  function renderShop(){
-    shopEl.innerHTML = '';
-    items.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'shop-item';
-      div.innerHTML = `<p style="font-weight:700">${item.name}</p><p>${item.price} монет</p>`;
-      div.addEventListener('click', () => {
-        if (inventory.find(i => i.name === item.name)) return alert('Уже куплено');
-        if (balance < item.price) return alert('Недостаточно монет');
-        balance -= item.price;
-        inventory.push({name: item.name});
-        if (item.mult) multipliers[item.name] = item.mult;
-        updateBalanceUI();
-        updateInventoryUI();
-        alert(`Куплено: ${item.name}`);
-      });
-      shopEl.appendChild(div);
-    });
-  }
-  renderShop();
-
-  // --- Поле и логика игры ---
-  let layout = []; // 'gift' | 'mine' | 'zero'
-  let revealed = [];
-  let gameOver = false;
-
-  function createCell(index){
-    const btn = document.createElement('button');
-    btn.className = 'cell';
-    btn.dataset.index = index;
-    btn.setAttribute('aria-label', `Клетка ${index+1}`);
-    btn.innerHTML = `<div class="icon-wrap"></div>`;
-    return btn;
-  }
-
-  function generateLayout(){
-    const arr = new Array(CELL_COUNT).fill('0');
-    let idxs = [...Array(CELL_COUNT).keys()];
-    idxs = idxs.sort(() => Math.random() - 0.5);
-    // 3 gifts
-    for (let i = 0; i < 3; i++) arr[idxs[i]] = 'gift';
-    // 4 mines
-    for (let i = 3; i < 7; i++) arr[idxs[i]] = 'mine';
-    // rest '0'
-    return arr;
-  }
-
-  function initGridDOM(){
-    gridEl.innerHTML = '';
-    for (let i = 0; i < CELL_COUNT; i++){
-      gridEl.appendChild(createCell(i));
-    }
-  }
-
-  function startGame(){
-    layout = generateLayout();
-    revealed = new Array(CELL_COUNT).fill(false);
-    gameOver = false;
-    initGridDOM();
-    attachCellHandlers();
-  }
-
-  // reveal single cell
-  function revealCell(cellEl, idx){
-    if (revealed[idx] || gameOver) return;
-    revealed[idx] = true;
-    const type = layout[idx];
-    cellEl.classList.add('revealed');
-
-    if (type === 'gift'){
-      cellEl.classList.add('gift');
-      cellEl.querySelector('.icon-wrap').innerHTML = `<svg viewBox="0 0 24 24" width="44" height="44"><use href="#svg-gift" /></svg>`;
-      addFlash(cellEl);
-      spawnConfetti(cellEl);
-      // награда: +15 монет (можешь изменить)
-      balance += 15;
-      updateBalanceUI();
-    } else if (type === 'mine'){
-      cellEl.classList.add('mine');
-      cellEl.querySelector('.icon-wrap').innerHTML = `<svg viewBox="0 0 24 24" width="44" height="44"><use href="#svg-mine" /></svg>`;
-      addFlash(cellEl);
-      // штраф: -25 монет (пример)
-      balance = Math.max(0, balance - 25);
-      updateBalanceUI();
-      // конец игры: reveal all and lock
-      gameOver = true;
-      setTimeout(() => {
-        revealAll(); // покажем остальные клетки
-        setTimeout(()=> alert('Бомба! Игра окончена.'), 80);
-      }, 120);
-    } else {
-      // zero — не показываем '0', оставляем пустую и лёгкую стилизацию
-      cellEl.classList.add('zero');
-      // оставляем пустую иконку — ничего не пишем
-      addFlash(cellEl);
-    }
-    cellEl.disabled = true;
-    // если все непустые открыты — можно автоматически закончить игру (опция)
-  }
-
-  // reveal all cells (used on mine)
-  function revealAll(){
-    Array.from(gridEl.children).forEach((cellEl, idx) => {
-      if (revealed[idx]) return; // уже открыто
-      revealed[idx] = true;
-      const type = layout[idx];
-      cellEl.classList.add('revealed');
-      if (type === 'gift'){
-        cellEl.classList.add('gift');
-        cellEl.querySelector('.icon-wrap').innerHTML = `<svg viewBox="0 0 24 24" width="44" height="44"><use href="#svg-gift" /></svg>`;
-      } else if (type === 'mine'){
-        cellEl.classList.add('mine');
-        cellEl.querySelector('.icon-wrap').innerHTML = `<svg viewBox="0 0 24 24" width="44" height="44"><use href="#svg-mine" /></svg>`;
-      } else {
-        cellEl.classList.add('zero');
-      }
-      cellEl.disabled = true;
-    });
-  }
-
-  function addFlash(cellEl){
-    const f = document.createElement('div');
-    f.className = 'flash';
-    cellEl.appendChild(f);
-    setTimeout(()=>{ if (f.parentNode) f.parentNode.removeChild(f); }, 520);
-  }
-
-  function spawnConfetti(cellEl){
-    const conf = document.createElement('div'); conf.className = 'confetti';
-    const colors = ['#1ea6ff','#ffd166','#7efc6a','#ff6bcb','#7aa2ff'];
-    for (let i=0;i<8;i++){
-      const el = document.createElement('i');
-      el.style.left = 44 + (Math.random()*40 - 20) + 'px';
-      el.style.top = 44 + (Math.random()*20 - 10) + 'px';
-      el.style.background = colors[i % colors.length];
-      el.style.animationDelay = (Math.random()*0.12)+'s';
-      el.style.transform = `translateY(0) rotate(${Math.random()*360}deg)`;
-      conf.appendChild(el);
-    }
-    cellEl.appendChild(conf);
-    setTimeout(()=>{ conf.remove(); }, 920);
-  }
-
-  // делегируем клики по ячейкам
-  function attachCellHandlers(){
-    // очищаем предыдущий слушатель (на всякий случай)
-    gridEl.replaceWith(gridEl.cloneNode(true));
-    const newGrid = document.getElementById('mines-grid');
-    newGrid.addEventListener('click', (ev) => {
-      if (gameOver) return;
-      const c = ev.target.closest('.cell');
-      if (!c) return;
-      const idx = +c.dataset.index;
-      revealCell(c, idx);
-    });
-  }
-
-  // хуки кнопок
-  startBtn.addEventListener('click', startGame);
-  restartBtn.addEventListener('click', startGame);
-
-  // начальная отрисовка пустого поля
-  initGridDOM();
-
-  // --- готово ---
 });
+
+// --- Ежедневный бонус ---
+function dailyBonus() {
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const lastClaim = localStorage.getItem("lastDailyBonus");
+
+  if (lastClaim !== today) {
+    balance += 300;
+    updateBalance();
+    localStorage.setItem("lastDailyBonus", today);
+    showNotice("+300 монет за ежедневный бонус!", "success");
+  }
+}
+
+// --- Мины ---
+const MINE_COST = 15; // стоимость игры теперь 15 монет
+let minesActive = false;
+const grid = document.getElementById("mines-grid");
+
+document.getElementById("start-mines").addEventListener("click", startMines);
+document.getElementById("restart-mines").addEventListener("click", startMines);
+
+function startMines() {
+  if (balance < MINE_COST) {
+    showNotice("Недостаточно монет", "error");
+    return;
+  }
+  balance -= MINE_COST;
+  updateBalance();
+  minesActive = true;
+  grid.innerHTML = "";
+
+  const mines = new Set();
+  while (mines.size < 3) mines.add(Math.floor(Math.random() * 9));
+
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement("div");
+    cell.classList.add("cell");
+    cell.addEventListener("click", () => revealCell(cell, i, mines));
+    grid.appendChild(cell);
+  }
+
+  showNotice(`Игра началась — ищи подарки! Стоимость: ${MINE_COST} монет`, "info");
+}
+
+function revealCell(cell, i, mines) {
+  if (!minesActive || cell.classList.contains("revealed")) return;
+  cell.classList.add("revealed");
+
+  if (mines.has(i)) {
+    cell.classList.add("mine");
+    cell.textContent = "☠️";
+    minesActive = false;
+    showNotice("Мина! Игра окончена", "error");
+  } else {
+    cell.classList.add("crystal");
+    cell.textContent = "🎁";
+    const totalMult = 1 + Object.values(multipliers).reduce((a, b) => a + b, 0);
+    const win = 15 * totalMult;
+    balance += win;
+    updateBalance();
+    showNotice(`+${win.toFixed(0)} монет (×${totalMult.toFixed(1)})`, "success");
+  }
+}
+
+// --- Уведомления ---
+function showNotice(text, type = "info") {
+  const old = document.querySelector(".notice");
+  if (old) old.remove();
+  const notice = document.createElement("div");
+  notice.classList.add("notice", type);
+  notice.textContent = text;
+  document.body.appendChild(notice);
+  setTimeout(() => notice.classList.add("visible"), 50);
+  setTimeout(() => {
+    notice.classList.remove("visible");
+    setTimeout(() => notice.remove(), 300);
+  }, 2500);
+}
+
+// --- Магазин ---
+const items = [
+  { name: "FROST ×1.2", price: 100, mult: 0.2, img: "frost.jpg" },
+  { name: "SANTA ×1.5", price: 150, mult: 0.5, img: "santa.jpg" },
+  { name: "NEW YEAR ×2", price: 200, mult: 1.0, img: "newyear.jpg" },
+  { name: "ICE KING ×3", price: 350, mult: 2.0, img: "iceking.jpg" },
+  { name: "MEDAL SILVER ×2.2", price: 300, mult: 1.2, img: "silver.jpg" },
+  { name: "MEDAL GOLD ×2.5", price: 400, mult: 1.5, img: "gold.jpg" }
+];
+
+function renderShop() {
+  const shop = document.getElementById("shop-items");
+  shop.innerHTML = "";
+  items.forEach(item => {
+    const div = document.createElement("div");
+    div.classList.add("shop-item");
+    div.innerHTML = `
+      <img src="${item.img}" alt="${item.name}">
+      <p>${item.name}</p>
+      <p>${item.price} монет</p>
+    `;
+    div.addEventListener("click", () => {
+      if (inventory.includes(item.name)) return showNotice("Уже куплено", "info");
+      if (balance < item.price) return showNotice("Недостаточно монет", "error");
+      balance -= item.price;
+      inventory.push(item.name);
+      multipliers[item.name] = item.mult;
+      updateBalance();
+      updateInventory();
+      showNotice(`Куплено ${item.name}!`, "success");
+    });
+    shop.appendChild(div);
+  });
+}
+
+// --- Снег ---
+const canvas = document.getElementById("snow");
+const ctx = canvas.getContext("2d");
+let snowflakes = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+function createSnow() {
+  for (let i = 0; i < 150; i++) {
+    snowflakes.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 3 + 1,
+      d: Math.random() + 0.5,
+    });
+  }
+}
+createSnow();
+
+function drawSnow() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(255,255,255,0.8)";
+  ctx.beginPath();
+  for (let f of snowflakes) {
+    ctx.moveTo(f.x, f.y);
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+  }
+  ctx.fill();
+  moveSnow();
+}
+
+function moveSnow() {
+  for (let f of snowflakes) {
+    f.y += f.d;
+    if (f.y > canvas.height) {
+      f.y = 0;
+      f.x = Math.random() * canvas.width;
+    }
+  }
+}
+setInterval(drawSnow, 33);
+
+// --- Инициализация ---
+dailyBonus();
+updateBalance();
+updateInventory();
+renderShop();
+updateTotalMultiplier();
