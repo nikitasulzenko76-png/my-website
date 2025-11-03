@@ -9,10 +9,12 @@
 <body>
 <header>
   <nav>
-    <button class="tab-btn" data-tab="mines">Мины</button>
-    <button class="tab-btn" data-tab="shop">Магазин</button>
-    <button class="tab-btn" data-tab="duel">Дуэли</button>
-    <button class="tab-btn" data-tab="profile">Профиль</button>
+    <div class="nav-row">
+      <button class="tab-btn" data-tab="mines">Мины</button>
+      <button class="tab-btn" data-tab="shop">Магазин</button>
+      <button class="tab-btn" data-tab="duel">Дуэли</button>
+      <button class="tab-btn" data-tab="profile">Профиль</button>
+    </div>
     <div class="balance">Баланс: <span id="balance">0</span></div>
   </nav>
 </header>
@@ -37,8 +39,8 @@
   <section id="duel" class="tab">
     <h2>Дуэли ⚔️</h2>
     <div class="duel-row">
-      <input id="duel-player1" placeholder="Игрок 1 ID" />
-      <input id="duel-player2" placeholder="Игрок 2 ID" />
+      <input id="duel-player1" placeholder="Ваш ID" />
+      <input id="duel-player2" placeholder="ID друга" />
       <button id="duel-start">Начать дуэль</button>
     </div>
     <div id="duel-arena" class="hidden">
@@ -70,7 +72,6 @@
   </section>
 </main>
 
-<canvas id="snow"></canvas>
 <script src="script.js"></script>
 </body>
 </html>
