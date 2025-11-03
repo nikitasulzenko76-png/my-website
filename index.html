@@ -1,73 +1,45 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Мины — рабочая версия</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coin Battle ❄️</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="top-bar">
-    <div style="display:flex;justify-content:space-between;align-items:center;max-width:900px;margin:0 auto;padding:6px 12px;">
-      <div>
-        <div class="title">Мины</div>
-        <div class="subtitle">Стоимость игры: <span id="mine-cost-label">15</span> монет. Найди подарки и избегай мин.</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-size:13px;color:rgba(190,210,255,0.85)">Баланс</div>
-        <div id="balance" style="font-weight:800;font-size:20px;color:#fff">0</div>
-      </div>
-    </div>
+  <header>
+    <nav>
+      <button class="tab-btn" data-tab="mines">Мины</button>
+      <button class="tab-btn" data-tab="shop">Магазин</button>
+      <button class="tab-btn" data-tab="profile">Профиль</button>
+      <div class="balance">Баланс: <span id="balance">0</span></div>
+    </nav>
   </header>
 
-  <main class="card-wrap">
-    <!-- MINES -->
+  <main>
     <section id="mines" class="tab active">
-      <button id="start-mines" class="btn start-btn">Начать игру</button>
-      <div id="mines-grid" class="grid" aria-hidden="false"></div>
-      <button id="restart-mines" class="btn replay-btn">Сыграть снова</button>
+      <h2>Мины</h2>
+      <p>Стоимость игры: 20 монет. Найди подарки и избегай мин.</p>
+      <button id="start-mines">Начать игру</button>
+      <div id="mines-grid"></div>
+      <button id="restart-mines">Сыграть снова</button>
     </section>
 
-    <!-- SHOP -->
     <section id="shop" class="tab">
       <h2>Магазин</h2>
-      <div id="shop-items" class="shop-grid"></div>
+      <div id="shop-items"></div>
     </section>
 
-    <!-- DUEL (минимально) -->
-    <section id="duel" class="tab">
-      <h2>Дуэли (демо)</h2>
-      <p>Дуэли пока в демо-режиме.</p>
-    </section>
-
-    <!-- PROFILE -->
     <section id="profile" class="tab">
       <h2>Профиль</h2>
-      <div class="profile-row"><strong>ID игрока:</strong> <span id="player-id"></span></div>
-      <div class="profile-row"><strong>Баланс:</strong> <span id="profile-balance"></span> монет</div>
-      <h3>Инвентарь</h3>
-      <div id="inventory" class="inventory-grid"></div>
+      <p>Баланс: <span id="profile-balance"></span></p>
+      <p>Текущий множитель: ×<span id="total-mult">1.0</span></p>
+      <h3>Купленные предметы:</h3>
+      <ul id="inventory"></ul>
     </section>
   </main>
 
-  <nav class="bottom-nav">
-    <button class="tab-btn active" data-tab="mines">💣<span>Мины</span></button>
-    <button class="tab-btn" data-tab="shop">🛍<span>Магазин</span></button>
-    <button class="tab-btn" data-tab="duel">⚔️<span>Дуэли</span></button>
-    <button class="tab-btn" data-tab="profile">👤<span>Профиль</span></button>
-  </nav>
-
-  <!-- Inline SVG icons -->
-  <svg style="display:none;">
-    <symbol id="svg-gift" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7h16zm-4-7.5A2.5 2.5 0 0 0 13.5 7H12v-.5c0-1.1.9-2 2-2 .55 0 1.05.22 1.41.59A2 2 0 0 1 16 4.5zM8 4.5A2 2 0 0 1 9.59 6c.36-.37.86-.59 1.41-.59 1.1 0 2 .9 2 2V7H6.5A2.5 2.5 0 0 0 8 4.5z"></path>
-    </symbol>
-
-    <symbol id="svg-mine" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm9 5h-3.2l1.6-1.6-1.4-1.4L16.4 9H15V7h2.4l1.6-1.6L17.6 4 16 5.6V3h-2v2.6L11.4 4 10 5.4 11.6 7H9v2h1.6L7 11.4 8.4 13 10 11.6V14H8v2h2.6L7.4 18 9 19.6 11.6 17.2V20h2v-2.8L15 19.6 16.4 18 14 15.6V14h2v-2h-1.6L18 10.4 16.6 9 15 10.6V8h2v2.4L21 8.6 22.4 10 20 12z"></path>
-    </symbol>
-  </svg>
-
+  <canvas id="snow"></canvas>
   <script src="script.js"></script>
 </body>
 </html>
