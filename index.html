@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coin Battle ❄️</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coin Battle ☀️</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <header>
-    <nav>
-      <button class="tab-btn" data-tab="mines">Мины</button>
-      <button class="tab-btn" data-tab="shop">Магазин</button>
-      <button class="tab-btn" data-tab="profile">Профиль</button>
-      <div class="balance">Баланс: <span id="balance">0</span></div>
-    </nav>
+    <button class="tab-btn" data-tab="mines">Мины</button>
+    <button class="tab-btn" data-tab="shop">Магазин</button>
+    <button class="tab-btn" data-tab="profile">Профиль</button>
+    <div class="balance">Баланс: <span id="balance">0</span></div>
   </header>
 
   <main>
     <section id="mines" class="tab active">
       <h2>Мины</h2>
-      <p>Стоимость игры: 20 монет. Найди подарки и избегай мин.</p>
+      <p>Стоимость игры: 15 монет. Найди подарки и избегай мин!</p>
       <button id="start-mines">Начать игру</button>
       <div id="mines-grid"></div>
       <button id="restart-mines">Сыграть снова</button>
@@ -39,7 +38,6 @@
     </section>
   </main>
 
-  <canvas id="snow"></canvas>
   <script src="script.js"></script>
 </body>
 </html>
