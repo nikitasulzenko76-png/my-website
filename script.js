@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   let currentIndex = null;
   let objects = [];
 
-  // ----------------- Функции проектов -----------------
+  // ----------------- Проекты -----------------
   function renderProjects() {
     projectList.innerHTML = "";
     projects.forEach((p, index) => {
@@ -43,20 +43,28 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
   renderProjects();
 
-  // ----------------- Функции доски -----------------
+  // ----------------- Доска -----------------
   const canvas = document.getElementById("board");
   const ctx = canvas.getContext("2d");
-
   let offsetX = 0, offsetY = 0, scale = 1, minScale = 0.5, maxScale = 2;
   let drawMode = true, drawing=false, erasing=false;
   let currentTool="pen", color="#000000", thickness=2;
-
   const toggleBtn = document.getElementById("toggleMode");
   toggleBtn.addEventListener("click", ()=>{
     drawMode=!drawMode;
     toggleBtn.textContent=drawMode?"✏️ Режим Рисования":"🖱️ Режим Курсора";
   });
 
+  const penBtn = document.getElementById("pen");
+  const eraseBtn = document.getElementById("erase");
+  const colorInput = document.getElementById("colorPicker");
+  const thicknessInput = document.getElementById("thickness");
+  const clearBtn = document.getElementById("clear");
+  const saveBtn = document.getElementById("save");
+  const imageLoader = document.getElementById("imageLoader");
+  const addImageBtn = document.getElementById("addImage");
+
+  // ----------------- Отображение доски -----------------
   function showBoard(){
     projectContainer.style.display="none";
     boardContainer.style.display="block";
@@ -65,6 +73,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     redraw();
   }
 
+  // ----------------- Сетка -----------------
   function drawGrid(){
     const gridSize=50;
     ctx.save();
@@ -195,19 +204,18 @@ document.addEventListener("DOMContentLoaded", ()=>{
     redraw();
   });
 
-  document.getElementById("pen").addEventListener("click",()=>{erasing=false; currentTool="pen";});
-  document.getElementById("erase").addEventListener("click",()=>{erasing=true; currentTool="erase";});
-  document.getElementById("colorPicker").addEventListener("input",(e)=>color=e.target.value);
-  document.getElementById("thickness").addEventListener("input",(e)=>thickness=parseInt(e.target.value));
-  document.getElementById("clear").addEventListener("click",()=>{objects=[]; redraw();});
-  document.getElementById("save").addEventListener("click",()=>{
+  penBtn.addEventListener("click",()=>{erasing=false; currentTool="pen";});
+  eraseBtn.addEventListener("click",()=>{erasing=true; currentTool="erase";});
+  colorInput.addEventListener("input",(e)=>color=e.target.value);
+  thicknessInput.addEventListener("input",(e)=>thickness=parseInt(e.target.value));
+  clearBtn.addEventListener("click",()=>{objects=[]; redraw();});
+  saveBtn.addEventListener("click",()=>{
     projects[currentIndex].objects=objects;
     localStorage.setItem("projects",JSON.stringify(projects));
     alert("Сохранено!");
   });
 
-  const imageLoader=document.getElementById("imageLoader");
-  document.getElementById("addImage").addEventListener("click",()=>imageLoader.click());
+  addImageBtn.addEventListener("click",()=>imageLoader.click());
   imageLoader.addEventListener("change",(e)=>{
     const file=e.target.files[0]; if(!file) return;
     const reader=new FileReader();
