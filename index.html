@@ -10,6 +10,17 @@
   <div id="toolbar">
     <button id="pen">✏️</button>
     <button id="erase">🧹</button>
+
+    <label>Цвет:
+      <input type="color" id="colorPicker" value="#000000">
+    </label>
+    <label>Толщина:
+      <input type="number" id="thickness" value="2" min="1" max="20">
+    </label>
+
+    <button id="addImage">🖼️ Добавить картинку</button>
+    <input type="file" id="imageLoader" accept="image/*" style="display:none;">
+
     <button id="save">💾 Сохранить</button>
     <button id="load">📂 Загрузить</button>
     <button id="clear">❌ Очистить</button>
