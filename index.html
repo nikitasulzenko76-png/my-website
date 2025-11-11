@@ -7,42 +7,30 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Список проектов -->
   <div id="projectContainer">
     <h1>Мои проекты</h1>
     <ul id="projectList"></ul>
     <button id="createProject">➕ Создать проект</button>
   </div>
 
-  <script>
-    const projectList = document.getElementById("projectList");
-    const createBtn = document.getElementById("createProject");
+  <!-- Доска -->
+  <div id="boardContainer" style="display:none;">
+    <div id="toolbar">
+      <button id="toggleMode">✏️ Режим Рисования</button>
+      <button id="pen">✏️</button>
+      <button id="erase">🧹</button>
+      <label>Цвет: <input type="color" id="colorPicker" value="#000000"></label>
+      <label>Толщина: <input type="number" id="thickness" value="2" min="1" max="20"></label>
+      <button id="addImage">🖼️ Добавить картинку</button>
+      <input type="file" id="imageLoader" accept="image/*" style="display:none;">
+      <button id="save">💾 Сохранить</button>
+      <button id="clear">❌ Очистить</button>
+      <button id="backProjects">⬅️ Назад к проектам</button>
+    </div>
+    <canvas id="board"></canvas>
+  </div>
 
-    let projects = JSON.parse(localStorage.getItem("projects") || "[]");
-
-    function renderProjects() {
-      projectList.innerHTML = "";
-      projects.forEach((p, index) => {
-        const li = document.createElement("li");
-        li.textContent = p.name;
-        li.style.cursor = "pointer";
-        li.addEventListener("click", () => {
-          localStorage.setItem("currentProject", index);
-          window.location.href = "board.html";
-        });
-        projectList.appendChild(li);
-      });
-    }
-
-    createBtn.addEventListener("click", () => {
-      const name = prompt("Название нового проекта:");
-      if(name){
-        projects.push({name, objects: []});
-        localStorage.setItem("projects", JSON.stringify(projects));
-        renderProjects();
-      }
-    });
-
-    renderProjects();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
