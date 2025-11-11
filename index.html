@@ -1,42 +1,21 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coin Battle ☀️</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Miro Lite</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <header>
-    <button class="tab-btn" data-tab="mines">Мины</button>
-    <button class="tab-btn" data-tab="shop">Магазин</button>
-    <button class="tab-btn" data-tab="profile">Профиль</button>
-    <div class="balance">Баланс: <span id="balance">0</span></div>
-  </header>
+  <div id="toolbar">
+    <button id="pen">✏️</button>
+    <button id="erase">🧹</button>
+    <button id="save">💾 Сохранить</button>
+    <button id="load">📂 Загрузить</button>
+    <button id="clear">❌ Очистить</button>
+  </div>
 
-  <main>
-    <section id="mines" class="tab active">
-      <h2>Мины</h2>
-      <p>Стоимость игры: 15 монет. Найди подарки и избегай мин!</p>
-      <button id="start-mines">Начать игру</button>
-      <div id="mines-grid"></div>
-      <button id="restart-mines">Сыграть снова</button>
-    </section>
-
-    <section id="shop" class="tab">
-      <h2>Магазин</h2>
-      <div id="shop-items"></div>
-    </section>
-
-    <section id="profile" class="tab">
-      <h2>Профиль</h2>
-      <p>Баланс: <span id="profile-balance"></span></p>
-      <p>Текущий множитель: ×<span id="total-mult">1.0</span></p>
-      <h3>Купленные предметы:</h3>
-      <ul id="inventory"></ul>
-    </section>
-  </main>
+  <canvas id="board"></canvas>
 
   <script src="script.js"></script>
 </body>
