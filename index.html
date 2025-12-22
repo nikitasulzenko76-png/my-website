@@ -1,71 +1,96 @@
-import tkinter as tk
-import random
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мини-игра: Найди мину</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
 
-SIZE = 3
-MINES = 3
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(5, 60px);
+            grid-gap: 5px;
+            justify-content: center;
+            margin: 20px auto;
+        }
 
-BG = "#07182e"     # тёмно-синий фон
-BTN = "#102a43"    # синие кнопки
-OPEN = "#1c4e80"   # открытая клетка
-TEXT = "white"
+        .cell {
+            width: 60px;
+            height: 60px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-root = tk.Tk()
-root.title("Ледяные мины")
-root.configure(bg=BG)
-root.resizable(False, False)
+        .cell.revealed {
+            background-color: #fff;
+        }
 
-field = [[0]*SIZE for _ in range(SIZE)]
-buttons = [[None]*SIZE for _ in range(SIZE)]
-opened = 0
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Найди мину!</h1>
+    <div id="game-board"></div>
+    <button id="restart">Начать заново</button>
 
-# мины
-mines = set()
-while len(mines) < MINES:
-    mines.add((random.randint(0, 2), random.randint(0, 2)))
+    <script>
+        const board = document.getElementById('game-board');
+        const restartBtn = document.getElementById('restart');
+        const size = 5;
+        let minePosition;
 
-for x, y in mines:
-    field[x][y] = "M"
-    for dx in [-1, 0, 1]:
-        for dy in [-1, 0, 1]:
-            nx, ny = x + dx, y + dy
-            if 0 <= nx < SIZE and 0 <= ny < SIZE and field[nx][ny] != "M":
-                field[nx][ny] += 1
+        function createBoard() {
+            board.innerHTML = '';
+            minePosition = Math.floor(Math.random() * size * size);
+            
+            for (let i = 0; i < size * size; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                cell.addEventListener('click', revealCell);
+                board.appendChild(cell);
+            }
+        }
 
-frame = tk.Frame(root, bg=BG)
-frame.pack(padx=20, pady=20)
+        function revealCell(e) {
+            const index = parseInt(e.target.dataset.index);
+            e.target.classList.add('revealed');
+            
+            if (index === minePosition) {
+                e.target.textContent = '💣';
+                alert('Вы нашли мину! Игра окончена.');
+                revealAll();
+            } else {
+                e.target.textContent = '✅';
+            }
+        }
 
-def click(x, y):
-    global opened
-    b = buttons[x][y]
+        function revealAll() {
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.removeEventListener('click', revealCell);
+                if (parseInt(cell.dataset.index) === minePosition) {
+                    cell.textContent = '💣';
+                }
+            });
+        }
 
-    if b["state"] == "disabled":
-        return
+        restartBtn.addEventListener('click', createBoard);
 
-    if field[x][y] == "M":
-        b.config(text="💣", bg="red")
-        for i, j in mines:
-            buttons[i][j].config(text="💣")
-    else:
-        b.config(
-            text="" if field[x][y] == 0 else str(field[x][y]),
-            bg=OPEN
-        )
-        opened += 1
-
-    b.config(state="disabled")
-
-for i in range(SIZE):
-    for j in range(SIZE):
-        btn = tk.Button(
-            frame,
-            width=6,
-            height=3,
-            bg=BTN,
-            fg=TEXT,
-            font=("Arial", 14, "bold"),
-            command=lambda x=i, y=j: click(x, y)
-        )
-        btn.grid(row=i, column=j, padx=6, pady=6)
-        buttons[i][j] = btn
-
-root.mainloop()
+        // Инициализация
+        createBoard();
+    </script>
+</body>
+</html>
