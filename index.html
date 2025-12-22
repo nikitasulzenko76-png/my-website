@@ -1,96 +1,105 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Мини-игра: Найди мину</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
+import tkinter as tk
+import random
 
-        #game-board {
-            display: grid;
-            grid-template-columns: repeat(5, 60px);
-            grid-gap: 5px;
-            justify-content: center;
-            margin: 20px auto;
-        }
+SIZE = 3
+MINES = 3
 
-        .cell {
-            width: 60px;
-            height: 60px;
-            background-color: #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 24px;
-            font-weight: bold;
-        }
+BG_COLOR = "#0b132b"      # тёмный фон
+BTN_COLOR = "#1c2541"     # тёмно-синие кнопки
+TEXT_COLOR = "white"
 
-        .cell.revealed {
-            background-color: #fff;
-        }
+root = tk.Tk()
+root.title("❄️ Новогодние мины ❄️")
+root.configure(bg=BG_COLOR)
+root.resizable(False, False)
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <h1>Найди мину!</h1>
-    <div id="game-board"></div>
-    <button id="restart">Начать заново</button>
+# ---------- ЛОГИКА ИГРЫ ----------
+field = [[0]*SIZE for _ in range(SIZE)]
+buttons = [[None]*SIZE for _ in range(SIZE)]
+opened = 0
 
-    <script>
-        const board = document.getElementById('game-board');
-        const restartBtn = document.getElementById('restart');
-        const size = 5;
-        let minePosition;
+mines = set()
+while len(mines) < MINES:
+    mines.add((random.randint(0, 2), random.randint(0, 2)))
 
-        function createBoard() {
-            board.innerHTML = '';
-            minePosition = Math.floor(Math.random() * size * size);
-            
-            for (let i = 0; i < size * size; i++) {
-                const cell = document.createElement('div');
-                cell.classList.add('cell');
-                cell.dataset.index = i;
-                cell.addEventListener('click', revealCell);
-                board.appendChild(cell);
-            }
-        }
+for x, y in mines:
+    field[x][y] = "M"
+    for dx in [-1, 0, 1]:
+        for dy in [-1, 0, 1]:
+            nx, ny = x+dx, y+dy
+            if 0 <= nx < SIZE and 0 <= ny < SIZE and field[nx][ny] != "M":
+                field[nx][ny] += 1
 
-        function revealCell(e) {
-            const index = parseInt(e.target.dataset.index);
-            e.target.classList.add('revealed');
-            
-            if (index === minePosition) {
-                e.target.textContent = '💣';
-                alert('Вы нашли мину! Игра окончена.');
-                revealAll();
-            } else {
-                e.target.textContent = '✅';
-            }
-        }
+def click(x, y):
+    global opened
+    btn = buttons[x][y]
 
-        function revealAll() {
-            document.querySelectorAll('.cell').forEach(cell => {
-                cell.removeEventListener('click', revealCell);
-                if (parseInt(cell.dataset.index) === minePosition) {
-                    cell.textContent = '💣';
-                }
-            });
-        }
+    if btn["state"] == "disabled":
+        return
 
-        restartBtn.addEventListener('click', createBoard);
+    if field[x][y] == "M":
+        btn.config(text="💣", bg="red")
+        for i, j in mines:
+            buttons[i][j].config(text="💣")
+        status.config(text="💥 Ты проиграл!")
+    else:
+        btn.config(
+            text=str(field[x][y]) if field[x][y] > 0 else "❄️",
+            bg="#3a86ff"
+        )
+        opened += 1
+        if opened == SIZE*SIZE - MINES:
+            status.config(text="🎉 Победа! С Новым годом!")
 
-        // Инициализация
-        createBoard();
-    </script>
-</body>
-</html>
+    btn.config(state="disabled")
+
+# ---------- ПОЛЕ ----------
+frame = tk.Frame(root, bg=BG_COLOR)
+frame.pack(padx=20, pady=20)
+
+for i in range(SIZE):
+    for j in range(SIZE):
+        b = tk.Button(
+            frame,
+            text="",
+            width=6,
+            height=3,
+            bg=BTN_COLOR,
+            fg=TEXT_COLOR,
+            font=("Arial", 14),
+            command=lambda x=i, y=j: click(x, y)
+        )
+        b.grid(row=i, column=j, padx=5, pady=5)
+        buttons[i][j] = b
+
+# ---------- СТАТУС ----------
+status = tk.Label(
+    root,
+    text="❄️ Найди 3 мины ❄️",
+    bg=BG_COLOR,
+    fg="white",
+    font=("Arial", 14)
+)
+status.pack(pady=10)
+
+# ---------- СНЕГ ----------
+canvas = tk.Canvas(root, width=300, height=80, bg=BG_COLOR, highlightthickness=0)
+canvas.pack()
+
+snowflakes = []
+for _ in range(20):
+    x = random.randint(0, 300)
+    y = random.randint(0, 80)
+    flake = canvas.create_text(x, y, text="❄️", font=("Arial", 12))
+    snowflakes.append(flake)
+
+def snow():
+    for flake in snowflakes:
+        canvas.move(flake, 0, 2)
+        x, y = canvas.coords(flake)
+        if y > 80:
+            canvas.coords(flake, random.randint(0, 300), 0)
+    root.after(100, snow)
+
+snow()
+root.mainloop()
