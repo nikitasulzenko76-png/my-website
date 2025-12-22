@@ -4,47 +4,21 @@ import random
 SIZE = 3
 MINES = 3
 
-# 🧊 ЦВЕТА (ЛЕДЯНОЙ СТИЛЬ)
-BG = "#07182e"        # тёмный лёд
-BTN = "#102a43"       # холодный синий
-OPEN = "#1c4e80"      # открытая клетка
-TEXT = "#e0f2ff"      # ледяной текст
+BG = "#07182e"     # тёмно-синий фон
+BTN = "#102a43"    # синие кнопки
+OPEN = "#1c4e80"   # открытая клетка
+TEXT = "white"
 
 root = tk.Tk()
-root.title("🧊 Ледяные мины")
+root.title("Ледяные мины")
 root.configure(bg=BG)
 root.resizable(False, False)
 
-# ❄️ СНЕГ (СВЕРХУ, НЕ МЕШАЕТ КЛИКАМ)
-canvas = tk.Canvas(root, width=260, height=70, bg=BG, highlightthickness=0)
-canvas.pack()
-
-flakes = []
-for _ in range(20):
-    f = canvas.create_text(
-        random.randint(0, 260),
-        random.randint(0, 70),
-        text="❄",
-        fill="white",
-        font=("Arial", 12)
-    )
-    flakes.append(f)
-
-def snow():
-    for f in flakes:
-        canvas.move(f, 0, 2)
-        x, y = canvas.coords(f)
-        if y > 70:
-            canvas.coords(f, random.randint(0, 260), 0)
-    root.after(120, snow)
-
-snow()
-
-# ---------- ИГРА ----------
 field = [[0]*SIZE for _ in range(SIZE)]
 buttons = [[None]*SIZE for _ in range(SIZE)]
 opened = 0
 
+# мины
 mines = set()
 while len(mines) < MINES:
     mines.add((random.randint(0, 2), random.randint(0, 2)))
@@ -53,21 +27,22 @@ for x, y in mines:
     field[x][y] = "M"
     for dx in [-1, 0, 1]:
         for dy in [-1, 0, 1]:
-            nx, ny = x+dx, y+dy
+            nx, ny = x + dx, y + dy
             if 0 <= nx < SIZE and 0 <= ny < SIZE and field[nx][ny] != "M":
                 field[nx][ny] += 1
 
 frame = tk.Frame(root, bg=BG)
-frame.pack(padx=15, pady=15)
+frame.pack(padx=20, pady=20)
 
 def click(x, y):
     global opened
     b = buttons[x][y]
+
     if b["state"] == "disabled":
         return
 
     if field[x][y] == "M":
-        b.config(text="💣", bg="#7a0c0c")
+        b.config(text="💣", bg="red")
         for i, j in mines:
             buttons[i][j].config(text="💣")
     else:
@@ -76,22 +51,21 @@ def click(x, y):
             bg=OPEN
         )
         opened += 1
+
     b.config(state="disabled")
 
 for i in range(SIZE):
     for j in range(SIZE):
-        b = tk.Button(
+        btn = tk.Button(
             frame,
             width=6,
             height=3,
             bg=BTN,
             fg=TEXT,
             font=("Arial", 14, "bold"),
-            relief="ridge",
-            activebackground=OPEN,
             command=lambda x=i, y=j: click(x, y)
         )
-        b.grid(row=i, column=j, padx=6, pady=6)
-        buttons[i][j] = b
+        btn.grid(row=i, column=j, padx=6, pady=6)
+        buttons[i][j] = btn
 
 root.mainloop()
