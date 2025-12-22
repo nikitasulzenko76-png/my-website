@@ -4,16 +4,43 @@ import random
 SIZE = 3
 MINES = 3
 
-BG_COLOR = "#0b132b"      # тёмный фон
-BTN_COLOR = "#1c2541"     # тёмно-синие кнопки
-TEXT_COLOR = "white"
+# 🧊 ЦВЕТА (ЛЕДЯНОЙ СТИЛЬ)
+BG = "#07182e"        # тёмный лёд
+BTN = "#102a43"       # холодный синий
+OPEN = "#1c4e80"      # открытая клетка
+TEXT = "#e0f2ff"      # ледяной текст
 
 root = tk.Tk()
-root.title("❄️ Новогодние мины ❄️")
-root.configure(bg=BG_COLOR)
+root.title("🧊 Ледяные мины")
+root.configure(bg=BG)
 root.resizable(False, False)
 
-# ---------- ЛОГИКА ИГРЫ ----------
+# ❄️ СНЕГ (СВЕРХУ, НЕ МЕШАЕТ КЛИКАМ)
+canvas = tk.Canvas(root, width=260, height=70, bg=BG, highlightthickness=0)
+canvas.pack()
+
+flakes = []
+for _ in range(20):
+    f = canvas.create_text(
+        random.randint(0, 260),
+        random.randint(0, 70),
+        text="❄",
+        fill="white",
+        font=("Arial", 12)
+    )
+    flakes.append(f)
+
+def snow():
+    for f in flakes:
+        canvas.move(f, 0, 2)
+        x, y = canvas.coords(f)
+        if y > 70:
+            canvas.coords(f, random.randint(0, 260), 0)
+    root.after(120, snow)
+
+snow()
+
+# ---------- ИГРА ----------
 field = [[0]*SIZE for _ in range(SIZE)]
 buttons = [[None]*SIZE for _ in range(SIZE)]
 opened = 0
@@ -30,76 +57,41 @@ for x, y in mines:
             if 0 <= nx < SIZE and 0 <= ny < SIZE and field[nx][ny] != "M":
                 field[nx][ny] += 1
 
+frame = tk.Frame(root, bg=BG)
+frame.pack(padx=15, pady=15)
+
 def click(x, y):
     global opened
-    btn = buttons[x][y]
-
-    if btn["state"] == "disabled":
+    b = buttons[x][y]
+    if b["state"] == "disabled":
         return
 
     if field[x][y] == "M":
-        btn.config(text="💣", bg="red")
+        b.config(text="💣", bg="#7a0c0c")
         for i, j in mines:
             buttons[i][j].config(text="💣")
-        status.config(text="💥 Ты проиграл!")
     else:
-        btn.config(
-            text=str(field[x][y]) if field[x][y] > 0 else "❄️",
-            bg="#3a86ff"
+        b.config(
+            text="" if field[x][y] == 0 else str(field[x][y]),
+            bg=OPEN
         )
         opened += 1
-        if opened == SIZE*SIZE - MINES:
-            status.config(text="🎉 Победа! С Новым годом!")
-
-    btn.config(state="disabled")
-
-# ---------- ПОЛЕ ----------
-frame = tk.Frame(root, bg=BG_COLOR)
-frame.pack(padx=20, pady=20)
+    b.config(state="disabled")
 
 for i in range(SIZE):
     for j in range(SIZE):
         b = tk.Button(
             frame,
-            text="",
             width=6,
             height=3,
-            bg=BTN_COLOR,
-            fg=TEXT_COLOR,
-            font=("Arial", 14),
+            bg=BTN,
+            fg=TEXT,
+            font=("Arial", 14, "bold"),
+            relief="ridge",
+            activebackground=OPEN,
             command=lambda x=i, y=j: click(x, y)
         )
-        b.grid(row=i, column=j, padx=5, pady=5)
+        b.grid(row=i, column=j, padx=6, pady=6)
         buttons[i][j] = b
 
-# ---------- СТАТУС ----------
-status = tk.Label(
-    root,
-    text="❄️ Найди 3 мины ❄️",
-    bg=BG_COLOR,
-    fg="white",
-    font=("Arial", 14)
-)
-status.pack(pady=10)
-
-# ---------- СНЕГ ----------
-canvas = tk.Canvas(root, width=300, height=80, bg=BG_COLOR, highlightthickness=0)
-canvas.pack()
-
-snowflakes = []
-for _ in range(20):
-    x = random.randint(0, 300)
-    y = random.randint(0, 80)
-    flake = canvas.create_text(x, y, text="❄️", font=("Arial", 12))
-    snowflakes.append(flake)
-
-def snow():
-    for flake in snowflakes:
-        canvas.move(flake, 0, 2)
-        x, y = canvas.coords(flake)
-        if y > 80:
-            canvas.coords(flake, random.randint(0, 300), 0)
-    root.after(100, snow)
-
-snow()
 root.mainloop()
