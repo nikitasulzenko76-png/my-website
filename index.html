@@ -1,36 +1,96 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Мои проекты</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Мини-игра: Найди мину</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(5, 60px);
+            grid-gap: 5px;
+            justify-content: center;
+            margin: 20px auto;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .cell.revealed {
+            background-color: #fff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-  <!-- Список проектов -->
-  <div id="projectContainer">
-    <h1>Мои проекты</h1>
-    <ul id="projectList"></ul>
-    <button id="createProject">➕ Создать проект</button>
-  </div>
+    <h1>Найди мину!</h1>
+    <div id="game-board"></div>
+    <button id="restart">Начать заново</button>
 
-  <!-- Доска -->
-  <div id="boardContainer" style="display:none;">
-    <div id="toolbar">
-      <button id="toggleMode">✏️ Режим Рисования</button>
-      <button id="pen">✏️</button>
-      <button id="erase">🧹</button>
-      <label>Цвет: <input type="color" id="colorPicker" value="#000000"></label>
-      <label>Толщина: <input type="number" id="thickness" value="2" min="1" max="20"></label>
-      <button id="addImage">🖼️ Добавить картинку</button>
-      <input type="file" id="imageLoader" accept="image/*" style="display:none;">
-      <button id="save">💾 Сохранить</button>
-      <button id="clear">❌ Очистить</button>
-      <button id="backProjects">⬅️ Назад к проектам</button>
-    </div>
-    <canvas id="board"></canvas>
-  </div>
+    <script>
+        const board = document.getElementById('game-board');
+        const restartBtn = document.getElementById('restart');
+        const size = 5;
+        let minePosition;
 
-  <script src="script.js"></script>
+        function createBoard() {
+            board.innerHTML = '';
+            minePosition = Math.floor(Math.random() * size * size);
+            
+            for (let i = 0; i < size * size; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                cell.addEventListener('click', revealCell);
+                board.appendChild(cell);
+            }
+        }
+
+        function revealCell(e) {
+            const index = parseInt(e.target.dataset.index);
+            e.target.classList.add('revealed');
+            
+            if (index === minePosition) {
+                e.target.textContent = '💣';
+                alert('Вы нашли мину! Игра окончена.');
+                revealAll();
+            } else {
+                e.target.textContent = '✅';
+            }
+        }
+
+        function revealAll() {
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.removeEventListener('click', revealCell);
+                if (parseInt(cell.dataset.index) === minePosition) {
+                    cell.textContent = '💣';
+                }
+            });
+        }
+
+        restartBtn.addEventListener('click', createBoard);
+
+        // Инициализация
+        createBoard();
+    </script>
 </body>
 </html>
